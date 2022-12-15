@@ -1,0 +1,17 @@
+{
+  "extension": "qs-advanced-filter",
+  "output": "./dist",
+  "compile": {
+    "entry": "./src/index.js",
+    "qext": "./src/index.qext",
+    "static": "./static"
+  },
+  "serverDeploy": {
+    "host": "qmi-qs-85eb",
+    "prefix": "hdr",
+    "isSecure": true,
+    "allowSelfSignedSignature": true,
+    "hdrAuthHeaderName": "hdr-usr",
+    "hdrAuthUser": "QMI-QS-85EB\\qlik"
+  }
+}
