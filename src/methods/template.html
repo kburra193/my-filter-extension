@@ -1,22 +1,45 @@
 <div class="chart-container">
-  <button id="dropdown-button" ng-click="toggleListbox()">
-    <div class="ng-dropdown-text">
-      <span class="ng-binding">{{ dimensionsLabel }}</span>
-      <span class="lui-button__caret  lui-caret"></span>
+  <!-- code for dropdown -->
+  <div ng-show="showDropdown" ng-model="ui">
+    <button id="dropdown-button" ng-click="toggleListbox()">
+      <div class="ng-dropdown-text">
+        <span class="ng-binding">{{ dimensionsLabel }}</span>
+        <span class="lui-button__caret  lui-caret"></span>
+      </div>
+    </button>
+    <div class="listbox" ng-show="IsVisible" ng-show="showDropdown" ng-model="ui">
+      <div class="search-container">
+        <span class="lui-icon--search  lui-icon"></span>
+        <input class="search-input" type="text" class="form-control" placeholder="Search in Listbox"
+          ng-model="searchValue" ng-keyup="searchFieldDataForString(searchValue)"></input>
+      </div>
+      <!-- code to render the filtervalues block-->
+      <div class="list-item" ng-class="row[0].qState" ng-click="applySelection(row[0].qElemNumber)"
+        ng-repeat="row in rows">
+        <span class="list-item-value" ng-bind-html="highlight(row[0].qText, searchValue)"></span>
+        <span class="list-item-frequency">{{ row[0].qFrequency }}</span>
+      </div>
     </div>
-  </button>
-  <div class="listbox" ng-show="IsVisible">
+  </div>
+  <!-- code for listbox -->
+  <div class="listbox" ng-show="showListbox" ng-model="ui">
     <div class="search-container">
       <span class="lui-icon--search  lui-icon"></span>
       <input class="search-input" type="text" class="form-control" placeholder="Search in Listbox"
         ng-model="searchValue" ng-keyup="searchFieldDataForString(searchValue)"></input>
     </div>
-
     <!-- code to render the filtervalues block-->
     <div class="list-item" ng-class="row[0].qState" ng-click="applySelection(row[0].qElemNumber)"
       ng-repeat="row in rows">
       <span class="list-item-value" ng-bind-html="highlight(row[0].qText, searchValue)"></span>
       <span class="list-item-frequency">{{ row[0].qFrequency }}</span>
     </div>
-
+  </div>
+  <!-- code for button group -->
+  <div class="buttongroup" ng-show="showButtongroup" ng-model="ui">
+    <button class="button-item" ng-class="row[0].qState" ng-click="applySelection(row[0].qElemNumber)"
+      ng-repeat="row in rows">
+      <span class="button-item-value" ng-bind-html="highlight(row[0].qText, searchValue)"></span>
+      <span class="button-item-frequency">{{ row[0].qFrequency }}</span>
+    </button>
   </div>

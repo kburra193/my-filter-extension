@@ -29,5 +29,32 @@ export default [
         )
       );
     };
+    // To switch between listbox, dropdown and buttongroup
+    $scope.showButtongroup = false;
+    $scope.showDropdown = false;
+    $scope.showListbox = true;
+    $scope.ui = "";
+    $scope.$watch("ui", function () {
+      console.log("controller ui", $scope.ui);
+      if ($scope.ui == "dropdown") {
+        $scope.showDropdown = true;
+        $scope.showButtongroup = false;
+        $scope.showListbox = false;
+      } else if ($scope.ui == "buttongroup") {
+        $scope.showDropdown = false;
+        $scope.showButtongroup = true;
+        $scope.showListbox = false;
+      } else if ($scope.ui == "listbox"){
+        $scope.showDropdown = false;
+        $scope.showButtongroup = false;
+        $scope.showListbox = true;
+      }
+      else {
+        $scope.showDropdown = false;
+        $scope.showButtongroup = false;
+        $scope.showListbox = true;
+      }
+
+    });
   },
 ];

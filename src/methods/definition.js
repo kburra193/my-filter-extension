@@ -11,7 +11,7 @@ var field = {
   frequency = {
     type: "string",
     component: "dropdown",
-    label: "Frequency mode",
+    label: "Frequency Mode",
     ref: "qListObjectDef.qFrequencyMode",
     options: [
       {
@@ -32,6 +32,27 @@ var field = {
       },
     ],
     defaultValue: "V",
+  },
+  ui = {
+    type: "string",
+    component: "dropdown",
+    label: "UI Type",
+    ref: "ui",
+    options: [
+      {
+        value: "listbox",
+        label: "Listbox",
+      },
+      {
+        value: "dropdown",
+        label: "Dropdown",
+      },
+      {
+        value: "buttongroup",
+        label: "Button Group",
+      },
+    ],
+    defaultValue: "listbox",
   },
   qSortByAscii = {
     type: "numeric",
@@ -156,6 +177,7 @@ export default {
       items: {
         field: field,
         frequency: frequency,
+        ui: ui,
       },
     },
     sorting: {
@@ -179,7 +201,7 @@ export default {
       type: "items",
       label: "Appearance",
       items: {
-        settings: settings
+        settings: settings,
       },
     },
   },

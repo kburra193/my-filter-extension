@@ -2,22 +2,22 @@ var qlik = window.require("qlik");
 export default async function ($element, layout) {
   //console.log($element);
   // todo - get element height
-    // if height < xxx
-      // show dropdown (or radio button )
-    // else 
-      // show listbox always
+  // if height < xxx
+  // show dropdown (or radio button )
+  // else
+  // show listbox always
 
   // todo 0 - back to using listDef
   // todo 1  - get applyselection working again
   // todo 2 - sorting **** a. create defintion b. apply patches to list in paint
-  // todo 3 - search 
+  // todo 3 - search
   // todo 4 - float frequency
   //todo5 - make sure you can scroll the listbox
   //todo 6 - add add ons
   // todo7 - push to repo and share with me
 
   // todo 8 - move logic to nebula - ran starts on this
-  
+
   console.log("paint layout", layout);
   var self = this;
   const $$scope = this.$scope;
@@ -30,7 +30,7 @@ export default async function ($element, layout) {
   $$scope.dimensionsLabel = layout.qListObject.qDimensionInfo.qFallbackTitle;
   console.log("paint dimensionLabel", $$scope.dimensionsLabel);
   $$scope.rows = layout.qListObject.qDataPages[0].qMatrix;
-  console.log("rows",$$scope.rows);
+  console.log("rows", $$scope.rows);
 
   //Create Session Object for Selections and Search Functionality
   var fieldObj = await app.model.engineApp.createSessionObject({
@@ -54,15 +54,15 @@ export default async function ($element, layout) {
   console.log("fieldObj", fieldObj);
 
   // Selections Functionality
-$$scope.applySelection = async function (val) {
-  console.log("applySelectionOnClick", val);
-  fieldObj.selectListObjectValues({
-    qPath: "/qListObjectDef",
-    qValues: [val],
-    qToggleMode: true,
-    qSoftLock: true,
-  });
-};
+  $$scope.applySelection = async function (val) {
+    console.log("applySelectionOnClick", val);
+    fieldObj.selectListObjectValues({
+      qPath: "/qListObjectDef",
+      qValues: [val],
+      qToggleMode: true,
+      qSoftLock: true,
+    });
+  };
   //Search Functionality
   $$scope.searchFieldDataForString = async function (string) {
     var result2 = await fieldObj.searchListObjectFor({
@@ -73,4 +73,8 @@ $$scope.applySelection = async function (val) {
     $$scope.rows = searchResults.qListObject.qDataPages[0].qMatrix;
   };
 
+  // To switch between listbox and buttongroup
+  var ui = layout.ui;
+  console.log("paint ui", ui);
+  $$scope.ui = ui;
 }
