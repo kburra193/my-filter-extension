@@ -1,109 +1,117 @@
-
+.chart-container {
+  height: 100%;
+}
 #dropdown-button {
-  display: inline-block;
-  cursor: pointer;
-  width: 100%;
-  height: 2rem;
-  position: relative;
-  color: #24292e;
-  background-color: #eff3f6;
-  padding: 0 0.5rem;
-  border: 1px solid rgba(27, 31, 35, 0.2);
-  box-sizing: border-box;
+  padding: 0 8px;
 }
-.ng-dropdown-text {
-  cursor: pointer;
-  width: 100%;
-  height: 2rem;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  font-weight: 600;
-  user-select: none;
-  white-space: nowrap;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-.listbox {
-  border: 1px solid #d1d5da;
-  border-radius: 3px;
-  box-shadow: none;
-  box-sizing: border-box;
-  position: relative;
-  max-height: 18em;
-  overflow-y: auto;
-}
-.listbox .list-item {
-  text-align: left;
-  font-weight: normal;
-  color: #5a5a5a;
-  font-size: 14px;
-  line-height: 18px;
-  padding: 8px 6px;
-  border-top: 0px solid #fff;
-  border-bottom: 1px solid #ddd;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-  cursor: pointer;
-  font-size: small;
-}
-
-.listbox .list-item .list-item-frequency {
+#dropdown-button .buttoncaret {
   float: right;
 }
-.listbox .list-item.O {
-  background-color: white;
-}
-.listbox .list-item.S {
-  stroke-width: 1;
-  stroke: #666;
-  opacity: 1;
-  background-color: green;
-  color: white;
-}
-.listbox .list-item.A {
-  background-color: lightgray;
-}
-.listbox .list-item.X {
-  background-color: #e6e6e6;
-}
-.listbox .list-item:hover {
-  box-shadow: 0 0 8px rgba(0, 128, 0, 0.1);
-  font-weight: bold;
-  border: 1px solid rgb(0, 128, 0);
-}
-
-.listbox .list-item.stateS:hover {
-  color: white !important;
-  border: 1px solid white !important;
-  font-weight: normal !important;
-}
-.search-container {
-  background: #fafafa;
-  border: 1px solid #d1d5da;
+.dropdown-ui .listbox {
+  height: 330px;
+  background-color: #fff;
+  border: 1px solid grey;
   border-radius: 3px;
+  box-shadow: 0 1px 2px #0006;
+  color: #595959;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  opacity: 1;
+  position: relative;
+  transition: opacity 0.2s ease-out;
+  z-index: 1021;
+}
+.dropdown-ui .listbox .search-container {
+  padding-left: 5px;
+}
+.listbox {
+  height: 100%;
+  overflow: auto;
   box-shadow: none;
   box-sizing: border-box;
+  background-color: white;
+}
+.listboxprops {
+  position: relative;
+}
+
+.listboxprops #loadMore {
+  display: table;
+  margin: 0 auto;
+}
+
+.listbox .list-item {
+  display: block;
+  list-style: none;
+  cursor: pointer;
+  word-wrap: normal;
+  /*border-bottom: 1px solid #ddd;*/
+  box-sizing: border-box;
+  padding: 3px;
+  position: relative;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  justify-content: space-between;
+}
+.listbox .list-item.pushText {
+  padding-left: 30px;
+}
+/* TO DO
+.listbox .listbox-tick {
+  color: #fff;
+  flex-grow: inherit;
+  flex-shrink: 0;
+  order: 4;
+  padding: 0 6px 0 0;
+  text-align: center;
+  width: 16px;
+  float: right;
+} */
+
+.list-item-frequency {
+  float: right;
+}
+
+.label-header .search-icon {
   color: #595959;
-  flex: 1 1 auto;
-  font-size: 13px;
+  flex: none;
+  font-size: 12px;
+  height: 25px;
+  line-height: 24px;
+  text-align: center;
+  width: 22px;
+  opacity: 0.6;
+}
+.label-header .search-icon:hover {
+  opacity: 0.8;
+}
+.search-container {
+  display: flex;
   height: 38px;
-  min-width: 0;
-  outline: 0;
-  padding: 0.4rem 1rem;
-  width: 100%;
+  line-height: 38px;
+  border-bottom: 1px solid #d9d9d9;
+  border-top: 1px solid #d9d9d9;
 }
 .search-input {
   background: #0000;
   border: none;
-  color: #595959;
-  flex: 1 1 auto;
+  border-radius: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: inherit;
   font-size: 13px;
+  height: 38px;
+  width: 100%;
   min-width: 0;
-  padding: 0.2rem 0.5rem;
+  outline: 0;
+  padding: 0 10px;
 }
+#searchClearButton {
+  float: right;
+  cursor: pointer;
+}
+
 .select-header {
   padding: 0.4rem 0.5rem;
   cursor: pointer;
@@ -114,43 +122,39 @@
   background-color: yellow;
 }
 
+/* button group */
 .button-item {
+  position: relative;
+  overflow-y: auto;
   background-color: initial;
-  border: 1px solid #b3b3b3;
-  border-radius: 3px;
   box-sizing: border-box;
   color: #595959;
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 700;
-  height: 28px;
   line-height: 24px;
-  min-width: 44px;
+  min-width: 28px;
   outline: none;
   padding: 0 16px;
-  position: relative;
-  text-decoration: none;
   transition: border-color 0.2s ease-out;
   vertical-align: middle;
 }
-.button-item  .button-item-frequency {
+.button-item .button-item-frequency {
   float: right;
 }
- .button-item.O {
+.button-item.O {
   background-color: white;
 }
 .button-item.S {
   stroke-width: 1;
-  stroke: #666;
+  stroke: #666 !important;
   opacity: 1;
-  background-color: green;
-  color: white;
+  background-color: #009845 !important;
+  color: #fff !important;
 }
 .button-item.A {
-  background-color: lightgray;
+  background-color: lightgray !important;
 }
 .button-item.X {
-  background-color: #e6e6e6;
+  background-color: #e6e6e6 !important;
 }
 .button-item:hover {
   box-shadow: 0 0 8px rgba(0, 128, 0, 0.1);
@@ -162,6 +166,92 @@
   border: 1px solid white !important;
   font-weight: normal !important;
 }
-.button-item .highlightedText {
-  background-color: yellow;
+.label-header .selectionsMenu {
+  border-radius: 3px;
+  z-index: 102;
+  opacity: 0.2;
+}
+.label-header .selectionsMenu:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.label-header .selectionsMenuItems {
+  border-bottom: 1px solid #d9d9d9;
+  cursor: default;
+  display: flex !important;
+  flex-direction: row !important;
+  line-height: 38px;
+  padding: 0;
+  white-space: normal;
+  width: 100%;
+  justify-content: space-evenly;
+  z-index: 1001;
+}
+.selectionsMenuItems .selectionsMenuItemsList {
+  cursor: pointer;
+  line-height: 38px;
+  padding: 5px;
+  font-size: 12px !important;
+}
+
+
+/* TO DO HOVER
+ .selectionsMenuItems .selectionsMenuItemsList:hover {
+  height: 50%;
+  background-color: #595959;
+  color: #fafafa;
+} */
+
+/* Create a custom checkbox */
+.listboxprops .list-item .checkbox {
+  height: 1rem;
+  width: 1rem;
+  left: 3px;
+  background-color: #eee;
+  display: block;
+  position: absolute;
+  border: 1px solid #8c8c8c;
+}
+
+/* On mouse-over, add a grey background color */
+.listboxprops .list-item .checkbox:hover {
+  background-color: #ccc;
+}
+/* When the checkbox is checked, add a tick */
+.listboxprops .list-item.S .checkbox::before {
+  content: "✔";
+  font-weight: 800;
+  left: 3px;
+  top: -1px;
+  color: #009845;
+  position: absolute;
+}
+/* Create a custom radioBtn */
+.listboxprops .list-item .radiobtn {
+  height: 1rem;
+  width: 1rem;
+  left: 3px;
+  background-color: #eee;
+  display: block;
+  position: absolute;
+  border: 1px solid #8c8c8c;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.listboxprops .list-item .radiobtn:hover {
+  background-color: #ccc;
+}
+/* When the radiobutton is checked, add a tick */
+.listboxprops .list-item.S .radiobtn::before {
+  content: "\2B24";
+  font-weight: 800;
+  top: 0px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  color: #009845;
+  position: absolute;
 }

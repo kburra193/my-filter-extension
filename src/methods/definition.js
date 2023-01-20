@@ -1,208 +1,1195 @@
 var field = {
-    type: "string",
-    expression: "always",
-    expressionType: "dimension",
-    ref: "qListObjectDef.qDef.qFieldDefs.0",
-    label: "Field",
-    show: function (data) {
-      return data.qListObjectDef && !data.qListObjectDef.qLibraryId;
+  type: "string",
+  expression: "always",
+  expressionType: "dimension",
+  ref: "qListObjectDef.qDef.qFieldDefs.0",
+  label: "Field",
+  show: function (data) {
+    return data.qListObjectDef && !data.qListObjectDef.qLibraryId;
+  },
+},
+frequency = {
+  type: "string",
+  component: "dropdown",
+  label: "Frequency Mode",
+  ref: "qListObjectDef.qFrequencyMode",
+  options: [
+    {
+      value: "N",
+      label: "No frequency",
     },
-  },
-  frequency = {
-    type: "string",
-    component: "dropdown",
-    label: "Frequency Mode",
-    ref: "qListObjectDef.qFrequencyMode",
-    options: [
-      {
-        value: "N",
-        label: "No frequency",
-      },
-      {
-        value: "V",
-        label: "Absolute value",
-      },
-      {
-        value: "P",
-        label: "Percent",
-      },
-      {
-        value: "R",
-        label: "Relative",
-      },
-    ],
-    defaultValue: "V",
-  },
-  ui = {
-    type: "string",
-    component: "dropdown",
-    label: "UI Type",
-    ref: "ui",
-    options: [
-      {
-        value: "listbox",
-        label: "Listbox",
-      },
-      {
-        value: "dropdown",
-        label: "Dropdown",
-      },
-      {
-        value: "buttongroup",
-        label: "Button Group",
-      },
-    ],
-    defaultValue: "listbox",
-  },
-  qSortByAscii = {
-    type: "numeric",
-    component: "dropdown",
-    label: "Sort by Alphabetical",
-    ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByAscii",
-    options: [
-      {
-        value: 1,
-        label: "Ascending",
-      },
-      {
-        value: 0,
-        label: "No",
-      },
-      {
-        value: -1,
-        label: "Descending",
-      },
-    ],
-    defaultValue: 1,
-  },
-  qSortByNumeric = {
-    type: "numeric",
-    component: "dropdown",
-    label: "Sort by Numeric",
-    ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByNumeric",
-    options: [
-      {
-        value: 1,
-        label: "Ascending",
-      },
-      {
-        value: 0,
-        label: "No",
-      },
-      {
-        value: -1,
-        label: "Descending",
-      },
-    ],
-    defaultValue: 0,
-  },
-  qSortByLoadOrder = {
-    type: "numeric",
-    component: "dropdown",
-    label: "Sort by Load Order",
-    ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByLoadOrder",
-    options: [
-      {
-        value: 1,
-        label: "Ascending",
-      },
-      {
-        value: 0,
-        label: "No",
-      },
-      {
-        value: -1,
-        label: "Descending",
-      },
-    ],
-    defaultValue: 0,
-  },
-  qSortByFrequency = {
-    type: "numeric",
-    component: "dropdown",
-    label: "Sort by Frequencey",
-    ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByFrequency",
-    options: [
-      {
-        value: -1,
-        label: "Ascending",
-      },
-      {
-        value: 0,
-        label: "No",
-      },
-      {
-        value: 1,
-        label: "Descending",
-      },
-    ],
-    defaultValue: 0,
-  },
-  qSortByState = {
-    type: "numeric",
-    component: "dropdown",
-    label: "Sort by State",
-    ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByState",
-    options: [
-      {
-        value: 1,
-        label: "Ascending",
-      },
-      {
-        value: 0,
-        label: "No",
-      },
-      {
-        value: -1,
-        label: "Descending",
-      },
-    ],
-    defaultValue: 0,
-  },
-  dataHandling = {
-    uses: "dataHandling",
-  },
-  settings = {
-    uses: "settings",
-  };
+    {
+      value: "V",
+      label: "Absolute value",
+    },
+    {
+      value: "P",
+      label: "Percent",
+    },
+    {
+      value: "R",
+      label: "Relative",
+    },
+  ],
+  defaultValue: "N",
+},
+ui = {
+  type: "string",
+  component: "dropdown",
+  label: "UI Type",
+  ref: "ui",
+  options: [
+    {
+      value: "listbox",
+      label: "Listbox",
+    },
+    {
+      value: "dropdown",
+      label: "Dropdown",
+    },
+    {
+      value: "buttongroup",
+      label: "Button Group",
+    },
+  ],
+  defaultValue: "listbox",
+},
+dataHandling = {
+  uses: "dataHandling",
+},
+settings = {
+  uses: "settings",
+};
 
 export default {
-  type: "items",
-  component: "accordion",
-  items: {
-    dimensions: {
-      type: "items",
-      label: "Dimensions",
-      ref: "qListObjectDef",
-      items: {
-        field: field,
-        frequency: frequency,
-        ui: ui,
-      },
+type: "items",
+component: "accordion",
+items: {
+  dimension: {
+    type: "items",
+    label: "Dimension",
+    ref: "qListObjectDef",
+    items: {
+      field: field,
+      frequency: frequency,
+      ui: ui,
     },
-    sorting: {
-      type: "items",
-      label: "Sorting",
-      items: {
-        qSortByAscii: qSortByAscii,
-        qSortByNumeric: qSortByNumeric,
-        qSortByLoadOrder: qSortByLoadOrder,
-        qSortByFrequency: qSortByFrequency,
-        qSortByState: qSortByState,
+  },
+  Listbox: {
+    type: "items",
+    label: "Sort Settings",
+    items: {
+      SortSettings: {
+        ref: "SortSettings",
+        translation: "Sort Criteria",
+        type: "numeric",
+        component: "dropdown",
+        options: [
+          {
+            value: 0,
+            label: "Logical State",
+          },
+          {
+            value: 1,
+            label: "Numeric Value",
+          },
+          {
+            value: 2,
+            label: "Alphabetical Order",
+          },
+          {
+            value: 3,
+            label: "Initial Load Order",
+          },
+          {
+            value: 4,
+            label: "Expression",
+          },
+        ],
+        defaultValue: 0,
       },
-    },
-    addons: {
-      uses: "addons",
-      items: {
-        dataHandling: dataHandling,
+      qSortByState: {
+        ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByState",
+        translation: "Sort by State",
+        type: "numeric",
+        component: "dropdown",
+        options: [
+          {
+            value: 1,
+            label: "Ascending",
+          },
+          {
+            value: 0,
+            label: "None",
+          },
+          {
+            value: -1,
+            label: "Descending",
+          },
+        ],
+        defaultValue: 0,
+
+        show: function (data) {
+          return data.SortSettings == 0;
+        },
       },
-    },
-    settings: {
-      type: "items",
-      label: "Appearance",
-      items: {
-        settings: settings,
+      qSortByNumeric: {
+        ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByNumeric",
+        translation: "Sort Numerically",
+        type: "numeric",
+        component: "dropdown",
+        options: [
+          {
+            value: 1,
+            label: "Ascending",
+          },
+          {
+            value: 0,
+            label: "None",
+          },
+          {
+            value: -1,
+            label: "Descending",
+          },
+        ],
+        defaultValue: 0,
+        show: function (data) {
+          return data.SortSettings == 1;
+        },
+      },
+      qSortByAscii: {
+        ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByAscii",
+        translation: "Sort Alphabetically",
+        type: "numeric",
+        component: "dropdown",
+        options: [
+          {
+            value: 1,
+            label: "Ascending",
+          },
+          {
+            value: 0,
+            label: "None",
+          },
+          {
+            value: -1,
+            label: "Descending",
+          },
+        ],
+        defaultValue: 0,
+        show: function (data) {
+          return data.SortSettings == 2;
+        },
+      },
+      qSortByLoadOrder: {
+        ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByLoadOrder",
+        translation: "Sort by Load Order",
+        type: "numeric",
+        component: "dropdown",
+        options: [
+          {
+            value: 1,
+            label: "Ascending",
+          },
+          {
+            value: 0,
+            label: "None",
+          },
+          {
+            value: -1,
+            label: "Descending",
+          },
+        ],
+        defaultValue: 0,
+        show: function (data) {
+          return data.SortSettings == 3;
+        },
+      },
+      qSortByExpression: {
+        ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByExpression",
+        translation: "Sort by Expression",
+        type: "numeric",
+        component: "dropdown",
+        options: [
+          {
+            value: 1,
+            label: "Ascending",
+          },
+          {
+            value: 0,
+            label: "None",
+          },
+          {
+            value: -1,
+            label: "Descending",
+          },
+        ],
+        defaultValue: 0,
+        show: function (data) {
+          return data.SortSettings == 4;
+        },
+      },
+      qExpression: {
+        ref: "qListObjectDef.qDef.qSortCriterias.0.qExpression",
+        translation: "Expression",
+        type: "string",
+        expression: "always",
+        expressionType: "dimension",
+        defaultValue: "",
+        show: function (data) {
+          return data.SortSettings == 4;
+        },
       },
     },
   },
+  appearance: {
+    uses: "settings",
+    items: {
+      HeaderSettings: {
+        type: "items",
+        label: "Header Settings",
+        items: {
+          HeaderShow: {
+            type: "boolean",
+            component: "switch",
+            label: "Header",
+            ref: "HeaderShow",
+            options: [
+              {
+                value: true,
+                label: "On",
+              },
+              {
+                value: false,
+                label: "Off",
+              },
+            ],
+            defaultValue: true,
+          },
+          HeaderColor: {
+            type: "boolean",
+            component: "switch",
+            label: "Color",
+            ref: "HeaderColorSwitch",
+            options: [
+              {
+                value: false,
+                label: "Custom",
+              },
+              {
+                value: true,
+                label: "Auto",
+              },
+            ],
+            defaultValue: false,
+          },
+          HeaderActiveColor: {
+            label: "Active Color",
+            ref: "HeaderActiveColorPicker",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#595959",
+            },
+            show: function (e) {
+              return !e.HeaderColorSwitch;
+            },
+          },
+          HeaderBgColor: {
+            label: "Header Background Color",
+            type: "string",
+            ref: "HeaderBgColor",
+          },
+          HeaderFontsizeSlider: {
+            type: "number",
+            component: "slider",
+            label: "Header Font Size (px)",
+            ref: "HeaderFontsize",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 16,
+            show: function (e) {
+              return e.HeaderFontsize;
+            },
+          },
+          HeaderFontFamilyLui: {
+            ref: "HeaderFontFamilySelect",
+            label: "Font Family Select",
+            component: "dropdown",
+            type: "string",
+            options: [
+              {
+                label: "QlikView Sans, sans-serif",
+                value: "QlikView Sans, sans-serif",
+              },
+              {
+                label: "Arial",
+                value: "Arial",
+              },
+              {
+                label: "Helvetica",
+                value: "Helvetica",
+              },
+              {
+                label: "Tahoma",
+                value: "Tahoma",
+              },
+              {
+                label: "Verdana",
+                value: "Verdana",
+              },
+              {
+                label: "Comic Sans MS",
+                value: "Comic Sans MS",
+              },
+              {
+                label: "Times New Roman",
+                value: "Times New Roman",
+              },
+              {
+                label: "Courier New",
+                value: "Courier New",
+              },
+              {
+                label: "Define your own",
+                value: "own",
+              },
+            ],
+            defaultValue: "QlikView Sans, sans-serif",
+          },
+          HeaderFontStyle: {
+            ref: "HeaderFontStyle",
+            translation: "Font Style",
+            type: "string",
+            component: "dropdown",
+            options: [
+              { value: "normal", label: "Normal" },
+              { value: "bold", label: "Bold" },
+              { value: "italic", label: "Italic" },
+              { value: "underline", label: "Underline" },
+            ],
+            defaultValue: "bold",
+          },
+          HeaderAlign: {
+            ref: "HeaderAlign",
+            expression: "optional",
+            translation: "Align",
+            type: "string",
+            component: "dropdown",
+            options: [
+              {
+                value: "left",
+                label: "left",
+              },
+              {
+                value: "center",
+                label: "center",
+              },
+              {
+                value: "right",
+                label: "right",
+              },
+            ],
+            defaultValue: "left",
+          },
+        },
+      },
+      CellSettings: {
+        type: "items",
+        label: "Cell Settings",
+        items: {
+          aboutcellSettings:{
+            component: "text",
+            label: "Cell level styling for Listbox/Dropdown :         "
+          },
+          ListItemHeightSlider: {
+            type: "number",
+            component: "slider",
+            label: "Height (px)",
+            ref: "ListItemHeight",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 25,
+            show: function (e) {
+              return e.ListItemHeight;
+            },
+          },
+          ListItemFontsizeSlider: {
+            type: "number",
+            component: "slider",
+            label: "Font Size (px)",
+            ref: "ListItemFontsize",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 12,
+            show: function (e) {
+              return e.ListItemFontsize;
+            },
+          },
+          ListItemFontFamilyLui: {
+            ref: "ListItemFontFamilySelect",
+            label: "Font Family Select",
+            component: "dropdown",
+            type: "string",
+            options: [
+              {
+                label: "QlikView Sans, sans-serif",
+                value: "QlikView Sans, sans-serif",
+              },
+              {
+                label: "Arial",
+                value: "Arial",
+              },
+              {
+                label: "Helvetica",
+                value: "Helvetica",
+              },
+              {
+                label: "Tahoma",
+                value: "Tahoma",
+              },
+              {
+                label: "Verdana",
+                value: "Verdana",
+              },
+              {
+                label: "Comic Sans MS",
+                value: "Comic Sans MS",
+              },
+              {
+                label: "Times New Roman",
+                value: "Times New Roman",
+              },
+              {
+                label: "Courier New",
+                value: "Courier New",
+              },
+              {
+                label: "Define your own",
+                value: "own",
+              },
+            ],
+            defaultValue: "QlikView Sans, sans-serif",
+          },
+          ListItemFontStyle: {
+            ref: "ListItemFontStyle",
+            translation: "Font Style",
+            type: "string",
+            component: "dropdown",
+            options: [
+              { value: "normal", label: "Normal" },
+              { value: "bold", label: "Bold" },
+              { value: "italic", label: "Italic" },
+              { value: "underline", label: "Underline" },
+            ],
+            defaultValue: "normal",
+          },
+            ListItemFontColor: {
+            label: "Font Color",
+            ref: "ListItemFontColorPicker",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#595959",
+            },
+            show: function (e) {
+              return e.ListItemFontColorPicker;
+            },
+          },
+          ListItemBgColor: {
+            label: "Background (Bg) Color",
+            ref: "ListItemBgColorPicker",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#FFF",
+            },
+            show: function (e) {
+              return e.ListItemBgColorPicker;
+            },
+          },
+          ListItemPossibleBgColor: {
+            label: "Possible Bg Color",
+            ref: "ListItemPossibleBgColorPicker",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#fff",
+            },
+            show: function (e) {
+              return e.ListItemPossibleBgColorPicker;
+            },
+          },
+          // ListItemSelectedHighlighterBgColor: {
+          //   label: "Select Highlight Bg Color",
+          //   ref: "ListItemSelectedHighlighterBgColorPicker",
+          //   component: "color-picker",
+          //   type: "object",
+          //   defaultValue: {
+          //     color: "#009845",
+          //   },
+          //   show: function (e) {
+          //     return e.ListItemSelectedHighlighterBgColorPicker;
+          //   },
+          // },
+          ListItemSelectedBgColor: {
+            label: "Selected Bg Color",
+            ref: "ListItemSelectedBgColorPicker",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#009845",
+            },
+            show: function (e) {
+              return e.ListItemSelectedBgColorPicker;
+            },
+          },
+          ListItemAlternateBgColor: {
+            label: "Alternate Bg Color",
+            ref: "ListItemAlternateBgColorPicker",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#ddd",
+            },
+            show: function (e) {
+              return e.ListItemAlternateBgColorPicker;
+            },
+          },
+          ListItemExcludedBgColor: {
+            label: "Excluded Bg Color",
+            ref: "ListItemExcludedBgColorPicker",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#a9a9a9",
+            },
+            show: function (e) {
+              return e.ListItemExcludedBgColorPicker;
+            },
+          },
+          ListItemAlign: {
+            ref: "ListItemAlign",
+            expression: "optional",
+            translation: "Align",
+            type: "string",
+            component: "dropdown",
+            options: [
+              {
+                value: "left",
+                label: "left",
+              },
+              {
+                value: "center",
+                label: "center",
+              },
+              {
+                value: "right",
+                label: "right",
+              },
+            ],
+            defaultValue: "left",
+          },
+          ListItemBorder: {
+            type: "boolean",
+            component: "switch",
+            label: "Border",
+            ref: "ListItemBorderSwitch",
+            options: [
+              {
+                value: true,
+                label: "Enabled",
+              },
+              {
+                value: false,
+                label: "Disabled",
+              },
+            ],
+            defaultValue: true,
+          },
+          ListItemBorderType: {
+            ref: "ListItemBorderType",
+            label: "Border Type Select",
+            component: "dropdown",
+            type: "string",
+            options: [
+              {
+                label: "Solid",
+                value: "solid",
+              },
+              {
+                label: "Dotted",
+                value: "dotted",
+              },
+              {
+                label: "Dashed",
+                value: "dashed",
+              },
+              {
+                label: "Double",
+                value: "double",
+              },
+              {
+                label: "None",
+                value: "none",
+              },
+            ],
+            defaultValue: "solid",
+            show: function (e) {
+              return e.ListItemBorderSwitch;
+            },
+          },
+          ListItemBorderWidth: {
+            type: "number",
+            component: "slider",
+            label: "Border Width (px)",
+            ref: "ListItemBorderWidth",
+            min: 0,
+            max: 5,
+            step: 1,
+            defaultValue: 1,
+            show: function (e) {
+              return e.ListItemBorderSwitch;
+            },
+          },
+          ListItemBorderColor: {
+            label: "Border Color",
+            ref: "ListItemBorderColor",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#ddd",
+            },
+            show: function (e) {
+              return e.ListItemBorderSwitch;
+            },
+          },
+        },
+      },
+      DropdownSettings: {
+        type: "items",
+        label: "Dropdown Settings",
+        items: {
+          DropdownHeightSlider: {
+            type: "number",
+            component: "slider",
+            label: "Height (px)",
+            ref: "DropdownHeight",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 30,
+            show: function (e) {
+              return e.DropdownHeight;
+            },
+          },
+          DropdownWidthSlider: {
+            type: "number",
+            component: "slider",
+            label: "Width (%)",
+            ref: "DropdownWidth",
+            min: 0,
+            max: 100,
+            step: 10,
+            defaultValue: 100,
+            show: function (e) {
+              return e.DropdownWidth;
+            },
+          },
+        },
+      },
+      ButtonGroupSettings: {
+        type: "items",
+        label: "Button Group Settings",
+        items: {
+          BtnFontsizeSlider: {
+            type: "number",
+            component: "slider",
+            label: "Font Size (px)",
+            ref: "BtnFontsize",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 13,
+            show: function (e) {
+              return e.BtnFontsize;
+            },
+          },
+          BtnHeightSlider: {
+            type: "number",
+            component: "slider",
+            label: "Height (px)",
+            ref: "BtnHeight",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 28,
+            show: function (e) {
+              return e.BtnHeight;
+            },
+          },
+          BtnOrientation: {
+            type: "string",
+            component: "buttongroup",
+            label: "Orientation",
+            ref: "BtnOrientation",
+            options: [
+              {
+                value: "inline",
+                label: "Horizontal",
+                tooltip: "Select for horizontal",
+              },
+              {
+                value: "block",
+                label: "Vertical",
+                tooltip: "Select for vertical",
+              },
+            ],
+            defaultValue: "inline",
+          },
+          BtnSpacingSlider: {
+            type: "number",
+            component: "slider",
+            label: "Spacing (px)",
+            ref: "BtnSpacing",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 3,
+            show: function (e) {
+              return e.BtnSpacing;
+            },
+          },
+          BtnGrouped: {
+            items: {
+              MyCheckProp: {
+                type: "boolean",
+                label: "Grouped",
+                ref: "BtnGrouped",
+                defaultValue: false,
+              },
+            },
+          },
+          BtnFontFamilyLui: {
+            ref: "BtnFontFamilySelect",
+            label: "Font Family Select",
+            component: "dropdown",
+            type: "string",
+            options: [
+              {
+                label: "QlikView Sans, sans-serif",
+                value: "QlikView Sans, sans-serif",
+              },
+              {
+                label: "Arial",
+                value: "Arial",
+              },
+              {
+                label: "Helvetica",
+                value: "Helvetica",
+              },
+              {
+                label: "Tahoma",
+                value: "Tahoma",
+              },
+              {
+                label: "Verdana",
+                value: "Verdana",
+              },
+              {
+                label: "Comic Sans MS",
+                value: "Comic Sans MS",
+              },
+              {
+                label: "Times New Roman",
+                value: "Times New Roman",
+              },
+              {
+                label: "Courier New",
+                value: "Courier New",
+              },
+              {
+                label: "Define your own",
+                value: "own",
+              },
+            ],
+            defaultValue: "QlikView Sans, sans-serif",
+          },
+          BtnFontStyle: {
+            ref: "BtnFontStyle",
+            translation: "Font Style",
+            type: "string",
+            component: "dropdown",
+            options: [
+              { value: "normal", label: "Normal" },
+              { value: "bold", label: "Bold" },
+              { value: "italic", label: "Italic" },
+              { value: "underline", label: "Underline" },
+            ],
+            defaultValue: "normal",
+          },
+          BtnFontColor: {
+            type: "boolean",
+            component: "switch",
+            label: "Font Color",
+            ref: "BtnFontColorSwitch",
+            options: [
+              {
+                value: false,
+                label: "Custom",
+              },
+              {
+                value: true,
+                label: "Auto",
+              },
+            ],
+            defaultValue: true,
+          },
+          BtnActiveColor: {
+            label: "Active Color",
+            ref: "BtnFontActiveColorPicker",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#000000",
+            },
+            show: function (e) {
+              return !e.BtnFontColorSwitch;
+            },
+          },
+          BtnBorder: {
+            type: "boolean",
+            component: "switch",
+            label: "Border",
+            ref: "BtnBorderSwitch",
+            options: [
+              {
+                value: true,
+                label: "Enabled",
+              },
+              {
+                value: false,
+                label: "Disabled",
+              },
+            ],
+            defaultValue: true,
+          },
+          BtnBorderType: {
+            ref: "BtnBorderType",
+            label: "Border Type Select",
+            component: "dropdown",
+            type: "string",
+            options: [
+              {
+                label: "Solid",
+                value: "solid",
+              },
+              {
+                label: "Dotted",
+                value: "dotted",
+              },
+              {
+                label: "Dashed",
+                value: "dashed",
+              },
+              {
+                label: "Double",
+                value: "double",
+              },
+              {
+                label: "None",
+                value: "none",
+              },
+            ],
+            defaultValue: "solid",
+            show: function (e) {
+              return e.BtnBorderSwitch;
+            },
+          },
+          BtnBorderWidth: {
+            type: "number",
+            component: "slider",
+            label: "Border Width (px)",
+            ref: "BtnBorderWidth",
+            min: 0,
+            max: 5,
+            step: 1,
+            defaultValue: 1,
+            show: function (e) {
+              return e.BtnBorderSwitch;
+            },
+          },
+          BtnBorderColor: {
+            label: "Border Color",
+            ref: "BtnBorderColor",
+            component: "color-picker",
+            type: "object",
+            defaultValue: {
+              color: "#ddd",
+            },
+            show: function (e) {
+              return e.BtnBorderSwitch;
+            },
+          },
+          BtnGlobalRadiusSlider: {
+            type: "number",
+            component: "slider",
+            label: "Global Radius (px)",
+            ref: "BtnGlobalRadius",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 20,
+            show: function (e) {
+              return e.BtnGlobalRadius;
+            },
+          },
+          BtnTopLeftRadiusSlider: {
+            type: "number",
+            component: "slider",
+            label: "Top Left Radius (px)",
+            ref: "BtnTopLeftRadius",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 20,
+            show: function (e) {
+              return e.BtnTopLeftRadius;
+            },
+          },
+          BtnTopRightRadiusSlider: {
+            type: "number",
+            component: "slider",
+            label: "Top Right Radius (px)",
+            ref: "BtnTopRightRadius",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 20,
+            show: function (e) {
+              return e.BtnTopRightRadius;
+            },
+          },
+          BtnBottomRightRadiusSlider: {
+            type: "number",
+            component: "slider",
+            label: "Bottom Right Radius (px)",
+            ref: "BtnBottomRightRadius",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 20,
+            show: function (e) {
+              return e.BtnBottomRightRadius;
+            },
+          },
+          BtnBottomLeftRadiusSlider: {
+            type: "number",
+            component: "slider",
+            label: "Bottom Left Radius (px)",
+            ref: "BtnBottomLeftRadius",
+            min: 0,
+            max: 50,
+            step: 1,
+            defaultValue: 20,
+            show: function (e) {
+              return e.BtnBottomLeftRadius;
+            },
+          },
+        },
+      },
+    },
+  },
+  InteractivitySettings: {
+    type: "items",
+    label: "Interactivity Settings",
+    items: {
+      EnableSelections: {
+        type: "boolean",
+        component: "switch",
+        label: "Selections",
+        ref: "enableSelections",
+        options: [
+          {
+            value: true,
+            label: "Enable",
+          },
+          {
+            value: false,
+            label: "Disable",
+          },
+        ],
+        defaultValue: true,
+      },
+      SelectionUIType: {
+        type: "string",
+        component: "dropdown",
+        label: "Selection Type",
+        ref: "SelectionUIType",
+        options: [
+          {
+            value: "vlist",
+            label: "Standard list",
+          },
+          {
+            value: "luicheckbox",
+            label: "Add Checkboxes",
+          },
+          {
+            value: "luiradio",
+            label: "Add Radio buttons",
+          },
+        ],
+        defaultValue: "vlist",
+        show: function (d) {
+          //return d.SelectionUIType == "vlist";
+          return d.enableSelections;
+        },
+      },
+      MultiSelect: {
+        type: "string",
+        component: "radiobuttons",
+        label: "Selection Mode",
+        ref: "multiSelect",
+        options: [
+          {
+            value: true,
+            label: "Multi Select",
+          },
+          {
+            value: false,
+            label: "Single Select",
+          },
+        ],
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections;
+        },
+      },
+      DragSelect: {
+        type: "boolean",
+        label: "Drag select",
+        ref: "dragSelect",
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections && d.multiSelect;
+        },
+      },
+      defaultSelection:{
+        type:"string",
+        ref:"defaultSelection",
+        label:"Default Value",
+        expression:"optional",
+        show: function (d) {
+          return d.enableSelections && !d.multiSelect;
+        },
+      },
+      SelectMultipleYN: {
+        ref: "selectMultipleYN",
+        type: "boolean",
+        label: "Select Multiple Default Values?",
+        defaultValue: false,
+        show: function (d) {
+          return d.enableSelections && d.multiSelect;
+        }
+      },
+      selectAlsoDefaults: {
+        type: "string",
+        label: "Select also these as default, separate by ;",
+        ref: "selectAlsoThese",
+        defaultValue: "",
+        show: function (d) {
+          return d.selectMultipleYN;
+        },
+        expression:"optional"
+      },
+      EnableSelectionsMenu: {
+        type: "boolean",
+        component: "switch",
+        label: "Selections Menu Bar",
+        ref: "enableSelectionsMenu",
+        options: [
+          {
+            value: true,
+            label: "Enable",
+          },
+          {
+            value: false,
+            label: "Disable",
+          },
+        ],
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections;
+        },
+      },
+      SelectionsMenuItemListSelectAll: {
+        type: "boolean",
+        label: "Select All",
+        ref: "enableSelectAll",
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections && d.enableSelectionsMenu;
+        },
+      },
+      SelectionsMenuItemListSelectExcluded: {
+        type: "boolean",
+        label: "Select Excluded",
+        ref: "enableSelectExcluded",
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections && d.enableSelectionsMenu;
+        },
+      },
+      SelectionsMenuItemListSelectPossible: {
+        type: "boolean",
+        label: "Select Possible",
+        ref: "enableSelectPossible",
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections && d.enableSelectionsMenu;
+        },
+      },
+      SelectionsMenuItemListSelectAlternative: {
+        type: "boolean",
+        label: "Select Alternative",
+        ref: "enableSelectAlternative",
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections && d.enableSelectionsMenu;
+        },
+      },
+      SelectionsMenuItemListClearAll: {
+        type: "boolean",
+        label: "Clear All",
+        ref: "enableClearAll",
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections && d.enableSelectionsMenu;
+        },
+      },
+      SelectionsMenuItemListLockField: {
+        type: "boolean",
+        label: "Lock Field",
+        ref: "enableLockField",
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections && d.enableSelectionsMenu;
+        },
+      },
+      SelectionsMenuItemListUnLockField: {
+        type: "boolean",
+        label: "Unlock Field",
+        ref: "enableUnlockField",
+        defaultValue: true,
+        show: function (d) {
+          return d.enableSelections && d.enableSelectionsMenu;
+        },
+      },
+    },
+  },
+},
 };
