@@ -15,6 +15,5 @@
     "qext-scripts": "2.2.0"
   },
   "dependencies": {
-    "dropdown-select": "^3.1.1"
   }
 }
