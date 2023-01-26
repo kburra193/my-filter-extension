@@ -1,37 +1,106 @@
 .chart-container {
   height: 100%;
 }
-#dropdown-button {
-  padding: 0 8px;
+/* dropdown css*/
+.chart-container
+.dropdown-toggle {
+  font-size: 0.75rem;
+  padding: 0px;
+  min-width: 0;
+  transition: all 0.35s ease;
+  text-align: left;
 }
-#dropdown-button .buttoncaret {
-  float: right;
+.chart-container .dropdown-toggle span {
+  padding: 0px 6px;
+  pointer-events: none;
 }
-.dropdown-ui .listbox {
-  height: 330px;
-  background-color: #fff;
-  border: 1px solid grey;
-  border-radius: 3px;
-  box-shadow: 0 1px 2px #0006;
-  color: #595959;
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  opacity: 1;
+.dropdown-list {
   position: relative;
-  transition: opacity 0.2s ease-out;
-  z-index: 1021;
+  z-index: 1090;
 }
-.dropdown-ui .listbox .search-container {
-  padding-left: 5px;
+.dropdown-list .listbox {
+  display: none;
+  position: fixed;
+  max-height: 332px;
+  overflow-y: auto;
+}
+.dropdown-list .listbox.active {
+  display: block;
+}
+.dropdown-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #bebebe;
+}
+.dropdown-header button,
+.lui-button--danger:focus,
+.lui-button--success:focus {
+  margin: 0 0.4rem;
+  padding: 0 12px;
+  border: none;
+}
+.rm-pointer-events {
+  pointer-events: none;
+}
+.iconsMenu{
+  margin-left: -12px;
+}
+.dropdown-listbox-selection-toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #a6a6a6;
+  border-bottom-color: #d9d9d9;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.dropdown-selection-toolbar button,
+.lui-button--danger:focus,
+.lui-button--success:focus {
+  margin: 0 0.4rem;
+  padding: 0 12px;
+  border: none;
+  width: auto;
+}
+/* listbox css */
+.listbox-selection-toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #a6a6a6;
+  border-bottom-color: #d9d9d9;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.listbox-selection-toolbar button,
+.lui-button--danger:focus,
+.lui-button--success:focus {
+  margin: 0 0.4rem;
+  padding: 0 12px;
+  border: none;
+  width: auto;
 }
 .listbox {
   height: 100%;
-  overflow: auto;
   box-shadow: none;
   box-sizing: border-box;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
   background-color: white;
+  overflow-y: scroll;
 }
+
+/* .listbox:hover {
+  overflow-y: scroll;
+} */
 .listboxprops {
   position: relative;
 }
@@ -57,17 +126,6 @@
 .listbox .list-item.pushText {
   padding-left: 30px;
 }
-/* TO DO
-.listbox .listbox-tick {
-  color: #fff;
-  flex-grow: inherit;
-  flex-shrink: 0;
-  order: 4;
-  padding: 0 6px 0 0;
-  text-align: center;
-  width: 16px;
-  float: right;
-} */
 
 .list-item-frequency {
   float: right;
@@ -90,6 +148,7 @@
   display: flex;
   height: 38px;
   line-height: 38px;
+  padding-left: 5px;
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #d9d9d9;
 }
@@ -122,7 +181,32 @@
   background-color: yellow;
 }
 
-/* button group */
+/* button group css*/
+.buttongroup-selection-toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d9d9d9;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.buttongroup-selection-toolbar button,
+.lui-button--danger:focus,
+.lui-button--success:focus {
+  margin: 0 0.4rem;
+  padding: 0 12px;
+  border: none;
+  width: auto;
+}
+.buttongroupprops {
+  border: 1px solid #bebebe;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
 .button-item {
   position: relative;
   overflow-y: auto;
@@ -133,7 +217,7 @@
   line-height: 24px;
   min-width: 28px;
   outline: none;
-  padding: 0 16px;
+  padding: 0 15px;
   transition: border-color 0.2s ease-out;
   vertical-align: middle;
 }
@@ -182,7 +266,6 @@
   display: flex !important;
   flex-direction: row !important;
   line-height: 38px;
-  padding: 0;
   white-space: normal;
   width: 100%;
   justify-content: space-evenly;
@@ -194,7 +277,6 @@
   padding: 5px;
   font-size: 12px !important;
 }
-
 
 /* TO DO HOVER
  .selectionsMenuItems .selectionsMenuItemsList:hover {
@@ -247,11 +329,36 @@
 .listboxprops .list-item.S .radiobtn::before {
   content: "\2B24";
   font-weight: 800;
-  top: 0px;
-  left: 3px;
+  top: -1.5px;
+  left: 2.5px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   color: #009845;
   position: absolute;
+}
+
+/* Change Scrollbar style */
+.listbox::-webkit-scrollbar {
+  height: 12px;
+  width: 0.4em;
+  border-radius: 4px;
+}
+.listbox::-webkit-scrollbar-track {
+  background: #f2f2f2;
+}
+.listbox::-webkit-scrollbar-thumb {
+  background: #ddd;
+}
+.listbox:hover::-webkit-scrollbar-thumb {
+  background: #bbb;
+}
+.listbox::-webkit-scrollbar-thumb:horizontal:hover,
+.listbox::-webkit-scrollbar-thumb:vertical:hover {
+  background: #999;
+  cursor: pointer;
+}
+.listbox::-webkit-scrollbar-thumb:horizontal:active,
+.listbox::-webkit-scrollbar-thumb:vertical:active {
+  background: #777;
 }

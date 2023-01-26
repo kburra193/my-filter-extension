@@ -5,7 +5,7 @@ export default {
     qInitialDataFetch: [
       {
         qWidth: 2,
-        qHeight: 100,
+        qHeight: 10,
       },
     ],
   },

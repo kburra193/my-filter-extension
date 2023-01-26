@@ -1,60 +1,4 @@
-var field = {
-  type: "string",
-  expression: "always",
-  expressionType: "dimension",
-  ref: "qListObjectDef.qDef.qFieldDefs.0",
-  label: "Field",
-  show: function (data) {
-    return data.qListObjectDef && !data.qListObjectDef.qLibraryId;
-  },
-},
-frequency = {
-  type: "string",
-  component: "dropdown",
-  label: "Frequency Mode",
-  ref: "qListObjectDef.qFrequencyMode",
-  options: [
-    {
-      value: "N",
-      label: "No frequency",
-    },
-    {
-      value: "V",
-      label: "Absolute value",
-    },
-    {
-      value: "P",
-      label: "Percent",
-    },
-    {
-      value: "R",
-      label: "Relative",
-    },
-  ],
-  defaultValue: "N",
-},
-ui = {
-  type: "string",
-  component: "dropdown",
-  label: "UI Type",
-  ref: "ui",
-  options: [
-    {
-      value: "listbox",
-      label: "Listbox",
-    },
-    {
-      value: "dropdown",
-      label: "Dropdown",
-    },
-    {
-      value: "buttongroup",
-      label: "Button Group",
-    },
-  ],
-  defaultValue: "listbox",
-},
-dataHandling = {
+var dataHandling = {
   uses: "dataHandling",
 },
 settings = {
@@ -70,9 +14,62 @@ items: {
     label: "Dimension",
     ref: "qListObjectDef",
     items: {
-      field: field,
-      frequency: frequency,
-      ui: ui,
+      field: {
+        type: "string",
+        expression: "always",
+        expressionType: "dimension",
+        ref: "qListObjectDef.qDef.qFieldDefs.0",
+        label: "Field",
+        show: function (data) {
+          return data.qListObjectDef && !data.qListObjectDef.qLibraryId;
+        },
+      },
+      frequency: {
+        type: "string",
+        component: "dropdown",
+        label: "Frequency Mode",
+        ref: "qListObjectDef.qFrequencyMode",
+        options: [
+          {
+            value: "N",
+            label: "No frequency",
+          },
+          {
+            value: "V",
+            label: "Absolute value",
+          },
+          {
+            value: "P",
+            label: "Percent",
+          },
+          {
+            value: "R",
+            label: "Relative",
+          },
+        ],
+        defaultValue: "N",
+      },
+      ui: {
+        type: "string",
+        component: "dropdown",
+        label: "UI Type",
+        ref: "ui",
+        options: [
+          {
+            value: "listbox",
+            label: "Listbox",
+          },
+          {
+            value: "dropdown",
+            label: "Dropdown",
+          },
+          {
+            value: "buttongroup",
+            label: "Button Group",
+          },
+        ],
+        defaultValue: "listbox",
+      },
     },
   },
   Listbox: {
@@ -127,7 +124,7 @@ items: {
             label: "Descending",
           },
         ],
-        defaultValue: 0,
+        defaultValue: 1,
 
         show: function (data) {
           return data.SortSettings == 0;
@@ -308,7 +305,7 @@ items: {
             min: 0,
             max: 50,
             step: 1,
-            defaultValue: 16,
+            defaultValue: 13,
             show: function (e) {
               return e.HeaderFontsize;
             },
@@ -411,7 +408,7 @@ items: {
             min: 0,
             max: 50,
             step: 1,
-            defaultValue: 25,
+            defaultValue: 30,
             show: function (e) {
               return e.ListItemHeight;
             },
@@ -424,7 +421,7 @@ items: {
             min: 0,
             max: 50,
             step: 1,
-            defaultValue: 12,
+            defaultValue: 13,
             show: function (e) {
               return e.ListItemFontsize;
             },
@@ -523,18 +520,6 @@ items: {
               return e.ListItemPossibleBgColorPicker;
             },
           },
-          // ListItemSelectedHighlighterBgColor: {
-          //   label: "Select Highlight Bg Color",
-          //   ref: "ListItemSelectedHighlighterBgColorPicker",
-          //   component: "color-picker",
-          //   type: "object",
-          //   defaultValue: {
-          //     color: "#009845",
-          //   },
-          //   show: function (e) {
-          //     return e.ListItemSelectedHighlighterBgColorPicker;
-          //   },
-          // },
           ListItemSelectedBgColor: {
             label: "Selected Bg Color",
             ref: "ListItemSelectedBgColorPicker",
@@ -1191,5 +1176,21 @@ items: {
       },
     },
   },
+  abouttxt:{
+    label: "About",
+    type: "items",
+    items: {
+      abouttxt2:{
+        label: "About",
+        type: "items",
+        items: {
+          aboutt:{
+          component: "text",
+          label: "Add some content"
+          }
+        }
+      }
+    }
+  }
 },
 };

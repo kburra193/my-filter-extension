@@ -3,7 +3,6 @@ var qlik = window.require("qlik");
 export default function ($element, layout) {
   // ..resize code here
   // To switch between listbox, dropdown and buttongroup when height is changed
-
   const $$scope = this.$scope;
   $$scope.height = $element.height();
   $$scope.width = $element.width();
