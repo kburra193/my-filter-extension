@@ -12,6 +12,6 @@
     "isSecure": true,
     "allowSelfSignedSignature": true,
     "hdrAuthHeaderName": "hdr-usr",
-    "hdrAuthUser": "QMI-QS-85EB\\qmi"
+    "hdrAuthUser": "QMI-QS-85EB\\qlik"
   }
 }
