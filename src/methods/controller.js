@@ -8,19 +8,21 @@ export default [
     console.log("controller $scope", $scope);
     // Toggle Dropdown
     $scope.onDropdownToggleClick = function (event) {
-      //Close open popovers
-      var popover = $(event.target).parent().find(".listbox");
-      $(document.body)
-        .find(".listbox")
-        .each((_, item) => {
-          !$(item).is(popover) ? $(item).removeClass("active") : "";
-        });
-
-      if (popover.hasClass("active")) {
-        popover.removeClass("active");
-      } else {
-        popover.addClass("active");
-      }
+      if ($scope.mode != "analysis") return;
+        else {
+        //Close open popovers
+        var popover = $(event.target).parent().find(".listbox");
+        $(document.body)
+          .find(".listbox")
+          .each((_, item) => {
+            !$(item).is(popover) ? $(item).removeClass("active") : "";
+          });
+          if (popover.hasClass("active")) {
+          popover.removeClass("active");
+        } else {
+          popover.addClass("active");
+        }
+      };
     };
     //Visible SelectionsMenu
     $scope.IsVisibleSelectionsMenuItems = false;

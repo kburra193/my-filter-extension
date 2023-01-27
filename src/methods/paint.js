@@ -1,5 +1,28 @@
 var qlik = window.require("qlik");
 var app = qlik.currApp();
+Array.prototype.getUnique = function () {
+  var uniques = [];
+  for (var i = 0, l = this.length; i < l; ++i) {
+    if (this.lastIndexOf(this[i]) == this.indexOf(this[i])) {
+      uniques.push(this[i]);
+    }
+  }
+  return uniques;
+};
+
+function removeDuplicates(arr) {
+  return arr.filter((item, index) => arr.indexOf(item) === index);
+}
+
+function checkIfArrayIsUnique(myArray) {
+  return myArray.length === new Set(myArray).size;
+}
+
+function getOccurence(array, value) {
+  var count = 0;
+  array.forEach((v) => v === value && count++);
+  return count;
+}
 
 export default async function ($element, layout) {
   var self = this;
@@ -7,18 +30,15 @@ export default async function ($element, layout) {
   $$scope.mode = qlik.navigation.getMode();
   $$scope.height = $element.height();
   $$scope.width = $element.width();
-  console.log("paint layout", layout);
+  //console.log("paint layout", layout);
   $$scope.qId = layout.qInfo.qId;
-  $$scope.qListObject = layout.qListObject;
   $$scope.dimensionsLabel = layout.qListObject.qDimensionInfo.qFallbackTitle;
   $$scope.rows = layout.qListObject.qDataPages[0].qMatrix.flat();
   $$scope.listUiType = layout.SelectionUIType;
   var qTop = 0;
-  var qHeight = 10;
+  var qHeight = 200;
   //Create Session Object for Selections and Search Functionality
   var listObj = self.backendApi.model;
-  console.log("extension backendapi", self.backendApi);
-  console.log("new session object", listObj);
   //Paginate
   $$scope.paginateList = async function () {
     qTop = qTop + 1;
@@ -31,7 +51,6 @@ export default async function ($element, layout) {
   var enableSelections = layout.enableSelections;
   $$scope.enableSelections = enableSelections;
   var multiSelect = layout.multiSelect;
-  var dragSelect = layout.dragSelect;
   var defaultSelection = layout.defaultSelection,
     defaultvalue,
     hasSelection = this.backendApi.hasSelections();
@@ -58,7 +77,6 @@ export default async function ($element, layout) {
       }
       data.push(row[0]);
     });
-    console.log("new selected data", data);
     for (var i = 0; i < data.length; i++) {
       var text = data[i].qText;
       if (!hasSelection) {
@@ -66,7 +84,6 @@ export default async function ($element, layout) {
           for (var v = 0; v < defaultselectionList.length; v++) {
             if (data[i].qText == defaultselectionList[v]) {
               multipleselectValues.push(data[i].qElemNumber);
-              console.log("multipleselectValues", multipleselectValues);
             }
           }
         }
@@ -78,93 +95,140 @@ export default async function ($element, layout) {
       self.backendApi.selectValues(0, multipleselectValues, true);
     }
   }
+
   var elNumbersToSelect = [];
+  // var elNumbersToTempActivate = [];
   //Logic for Drag Select
   var currentStartDrgElNum;
-  $$scope.setStartElNum = function (elNum) {
+  $$scope.startDrag = function (elNum) {
     currentStartDrgElNum = elNum;
   };
   var beginSelections = false;
-  $$scope.dragHandler = function (endElNum) {
-    //if (currentStartDrgElNum == endElNum)
-    //if (enableSelections && multiSelect == true && dragSelect) {
-    if (enableSelections) {
+  $$scope.endDrag = function (endElNum) {
+    if (enableSelections && $$scope.mode == "analysis") {
+      var currentItem = $$scope.rows.filter(
+        (row) => row.qElemNumber == endElNum
+      )[0];
+      var currentItemState = currentItem.qState;
+
       $$scope.showSelectionToolbar = true;
-      //console.log(currentStartDrgElNum, endElNum);
-      // logic for finding the set of items to select
-      if (currentStartDrgElNum < endElNum) {
-        for (var i = currentStartDrgElNum; i <= endElNum; i++) {
-          elNumbersToSelect.push(i);
-        }
-      } else if (currentStartDrgElNum > endElNum) {
-        for (var i = currentStartDrgElNum; i >= endElNum; i--) {
-          elNumbersToSelect.push(i);
-        }
-      } else if (currentStartDrgElNum == endElNum) {
-        // mouse down and up on the same value - click
-        console.log("one value clicked on");
-        $$scope.applySelection(endElNum);
-      }
-      $$scope.rows = $$scope.rows.map((i) => {
-        // toggle selected for the items we dragged through, temp ui until engine applies selection
-        return {
-          qText: i.qText,
-          qElemNumber: i.qElemNumber,
-          qFrequency: i.qFrequency,
-          qState: i.qState,
-          selected: elNumbersToSelect.includes(i.qElemNumber) ? "selected" : "",
-        };
-      });
       if (!beginSelections) {
         beginSelections = true;
         listObj.beginSelections({ qPaths: ["/qListObjectDef"] });
       }
-      listObj.selectListObjectValues({
-        qPath: "/qListObjectDef",
-        qValues: elNumbersToSelect,
-        qToggleMode: true,
-        //qSoftLock: true,
-      });
-    }
-  };
-  //Selections Functionality on
-  $$scope.applySelection = async function (elemNumber) {
-    if (!enableSelections || $$scope.mode != "analysis") return;
-    $$scope.showSelectionToolbar = true;
-    const index = elNumbersToSelect.indexOf(elemNumber);
-    if (index > -1) {
-      // only splice array when item is found
-      elNumbersToSelect.splice(index, 1); // 2nd parameter means remove one item only
-    } else {
-      elNumbersToSelect.push(elemNumber);
-    }
-    $$scope.rows = $$scope.rows.map((i) => {
-      // toggle selected for the items we dragged through, temp ui until engine applies selection
-      return {
-        qText: i.qText,
-        qElemNumber: i.qElemNumber,
-        qFrequency: i.qFrequency,
-        qState: i.qState,
-        selected: elNumbersToSelect.includes(i.qElemNumber) ? "selected" : "",
-      };
-    });
-    if (multiSelect == true) {
-      if (!beginSelections) {
-        beginSelections = true;
-        listObj.beginSelections({ qPaths: ["/qListObjectDef"] });
+
+      if (currentStartDrgElNum == endElNum) {
+        // CLICK HANDLER
+        console.log("click event");
+        var occurance = getOccurence(elNumbersToSelect, endElNum); // return number of occurnaces of item
+        var currentItem = $$scope.rows.filter(
+          (row) => row.qElemNumber == endElNum
+        );
+
+        console.log("current item", currentItem);
+
+        if (multiSelect) {
+          // if it's already active or already in array, remove it
+          if (currentItemState == "S" || occurance) {
+            elNumbersToSelect = elNumbersToSelect.filter((v) => v !== endElNum);
+            $$scope.rows.filter(
+              (row) => row.qElemNumber == endElNum
+            )[0].qState = "O";
+          } else {
+            elNumbersToSelect.push(endElNum);
+            $$scope.rows.filter(
+              (row) => row.qElemNumber == endElNum
+            )[0].qState = "S";
+          }
+        } else {
+          // single select - just clear all and apply new selection
+          if (currentItemState == "S") {
+            // if already selected, clear the array
+            console.log("huh?");
+            endElNum = false;
+          }
+        }
+
+        console.log("selected array after click", elNumbersToSelect);
+
+        listObj
+          .selectListObjectValues({
+            qPath: "/qListObjectDef",
+            qValues: endElNum === false ? [] : [endElNum],
+            qToggleMode: multiSelect, // true for multi select
+            //qSoftLock: true,
+          })
+          .then(function () {
+            if (!multiSelect) {
+              $$scope.endSelections(true);
+            }
+          });
+      } else {
+        // DRAG HANDLER
+        if (multiSelect) {
+          // user dragged accross multiple values and we allow drag
+          console.log("drag event");
+          // logic for finding the set of items to select
+          if (currentStartDrgElNum < endElNum) {
+            // when we dragged down
+            for (var i = currentStartDrgElNum; i <= endElNum; i++) {
+              elNumbersToSelect.push(i);
+            }
+          } else if (currentStartDrgElNum > endElNum) {
+            for (var i = currentStartDrgElNum; i >= endElNum; i--) {
+              // dragged up
+              elNumbersToSelect.push(i);
+            }
+          }
+
+          console.log(elNumbersToSelect);
+
+          // applying selection to qlik, but selection might still continue
+          listObj
+            .selectListObjectValues({
+              qPath: "/qListObjectDef",
+              qValues: elNumbersToSelect,
+              qToggleMode: true,
+              //qSoftLock: true,
+            })
+            .then(function (r) {
+              elNumbersToSelect = [];
+              $$scope.endSelections(true); // temporary, we need to add back the temp state to values and remove this line
+            });
+        } else {
+          console.log(
+            "drag is not allowed in single select mode, dont do anything"
+          );
+          elNumbersToSelect = [];
+        }
       }
+
+      // this will move up to the drag handler. need to resolve temp qStates
+
+      // console.log('el', endElNum);
+      // // console.log('occurance', occurance);
+      // console.log("list of current drag", elNumbersToSelect);
+      // // console.log("temp active numbers", elNumbersToTempActivate);
+
+      // temporary applying selected style to values, while in selection state
+      // $$scope.rows = $$scope.rows.map((i) => {
+      //   return {
+      //     qText: i.qText,
+      //     qElemNumber: i.qElemNumber,
+      //     qFrequency: i.qFrequency,
+      //     qState: elNumbersToSelect.includes(i.qElemNumber) ? "S" : i.qState,
+      //     // qState: elNumbersToTempActivate.includes(i.qElemNumber) && i.qState == "S" ? "" : i.qState,
+      //     //selected: elNumbersToTempActivate.includes(i.qElemNumber) ? "selected" : "",
+      //   };
+
+      // });
     }
-    listObj.selectListObjectValues({
-      qPath: "/qListObjectDef",
-      qValues: [elemNumber],
-      qToggleMode: multiSelect, // if multiselect - pass true to toggle mode
-      // qSoftLock: true,
-    });
   };
+
   // approve selection
   $$scope.endSelections = function (approve) {
     console.log("approve selections?", approve);
-    if (!approve) $$scope.clearAll();
+    if (!approve) $$scope.selectionsMenuBar("clearAll");
     listObj.abortListObjectSearch({ qPath: "/qListObjectDef" });
     listObj.endSelections({
       qAccept: approve,
@@ -172,6 +236,7 @@ export default async function ($element, layout) {
     $$scope.showSelectionToolbar = false;
     beginSelections = false;
     elNumbersToSelect = [];
+    // elNumbersToTempActivate = [];
     //Close
     $(".dropdown-list .listbox").removeClass("active");
   };
@@ -217,12 +282,12 @@ export default async function ($element, layout) {
     const pages = await getListData(listObj, 0, qHeight);
     $$scope.rows = pages.flat();
   };
-//To Clear Search
-$$scope.clearsearchValue = async function () {
-  listObj.abortListObjectSearch({ qPath: "/qListObjectDef" });
-  var pages = await getListData(listObj, 0, qHeight);
-  $$scope.rows = pages.flat();
-};
+  //To Clear Search
+  $$scope.clearsearchValue = async function () {
+    listObj.abortListObjectSearch({ qPath: "/qListObjectDef" });
+    var pages = await getListData(listObj, 0, qHeight);
+    $$scope.rows = pages.flat();
+  };
   async function getListData(listObj, qTop, qHeight) {
     const result = await listObj.getListObjectData({
       qPath: "/qListObjectDef",
@@ -277,7 +342,6 @@ $$scope.clearsearchValue = async function () {
       $$scope.listboxStyle = { position: "fixed", width: $$scope.width + "px" };
     }
   }
-
   //Header Props
   //1.FontSize
   var HeaderFontsize = layout.HeaderFontsize;
@@ -315,7 +379,7 @@ $$scope.clearsearchValue = async function () {
     "background-color": HeaderBgColor,
     "text-align": HeaderAlign,
   };
-   //Cell Props
+  //Cell Props
   //0.Height
   var ListItemHeight = layout.ListItemHeight;
   $$scope.ListItemHeight = ListItemHeight;
@@ -331,7 +395,6 @@ $$scope.clearsearchValue = async function () {
   //4.FontColor Bg Color Selected/Possible/Alternate/Exclude
   var ListItemFontColorPicker = layout.ListItemFontColorPicker;
   $$scope.ListItemFontColorPicker = ListItemFontColorPicker;
-
   //5.Alignment
   var ListItemAlign = layout.ListItemAlign;
   $$scope.ListItemAlign = ListItemAlign;
@@ -366,7 +429,7 @@ $$scope.clearsearchValue = async function () {
       ? ListItemBorderColor.color
       : "#000000",
   };
-   //Dropdown Props
+  //Dropdown Props
   //1.Height
   var DropdownHeight = layout.DropdownHeight;
   $$scope.DropdownHeight = DropdownHeight;
@@ -378,8 +441,6 @@ $$scope.clearsearchValue = async function () {
     height: DropdownHeight + "px",
     width: DropdownWidth + "%",
   };
-  console.log("Dropdown Styling Object", $$scope.dropdownStyle);
-
   //Btn Props
   //1.FontSize, Height, Width , Spacing ,Grouped
   var BtnFontsize = layout.BtnFontsize;
@@ -482,7 +543,7 @@ $$scope.clearsearchValue = async function () {
     "border-bottom-left-radius":
       layout.BtnGrouped == true ? "0" : BtnBottomLeftRadius + "px",
   };
-   //Interactivity UI Props for Selections Menu
+  //Interactivity UI Props for Selections Menu
   $$scope.enableSelectionsMenu = layout.enableSelectionsMenu;
   $$scope.enableSelectionsMenu = {
     display: layout.enableSelectionsMenu == true ? "onset" : "none",
@@ -541,17 +602,60 @@ $$scope.clearsearchValue = async function () {
     background-color: ${layout.ListItemExcludedBgColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
-  #custom-filter-${$$scope.qId} .listbox .list-item.S, #custom-filter-${$$scope.qId} .listbox .list-item.selected {
+  #custom-filter-${$$scope.qId} .listbox .list-item.S {
     background-color: ${layout.ListItemSelectedBgColorPicker.color} !important;
     color: #fff !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
+  #custom-filter-${$$scope.qId} .button-item.A {
+    background-color: ${layout.ListItemAlternateBgColorPicker.color} !important;
+    color: #595959 !important;
+    border-bottom: 1px solid #fff !important;
+  }
+  #custom-filter-${$$scope.qId} .button-item.O {
+    background-color: ${layout.ListItemPossibleBgColorPicker.color} !important;
+    color: #595959 !important;
+    border-bottom: 1px solid rgb(221, 221, 221) !important;
+  }
+  #custom-filter-${$$scope.qId} .button-item.X {
+    color: #fff !important;
+    background-color: ${layout.ListItemExcludedBgColorPicker.color} !important;
+    border-bottom: 1px solid rgb(221, 221, 221) !important;
+  }
+  #custom-filter-${$$scope.qId} .button-item.S {
+    background-color: ${layout.ListItemSelectedBgColorPicker.color} !important;
+    color: #fff !important;
+    border-bottom: 1px solid rgb(221, 221, 221) !important;
+  }
+  /* When the checkbox is checked, add a tick */
+  .listboxprops .list-item.S .checkbox::before {
+  content: "✔";
+  font-weight: 800;
+  left: 3px;
+  top: -1px;
+  color: ${layout.ListItemSelectedBgColorPicker.color} !important;
+  position: absolute;
+  } 
+  /* When the radiobutton is checked, add a tick */
+  .listboxprops .list-item.S .radiobtn::before {
+  font-weight: 800;
+  top: -1.5px;
+  left: 2.5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  color: ${layout.ListItemSelectedBgColorPicker.color} !important;
+  position: absolute;
+  }
   /* to remove some padding listbox */
-  .qv-client.qv-card #qv-stage-container #grid .qv-object-wrapper .qv-inner-object{
-    padding: 0px;
+  #custom-filter-${$$scope.qId} .qv-inner-object {
+    padding: 0px !important;
+  }
+  article:has(#custom-filter-${$$scope.qId} .active){
+    z-index: 1020;
   }
   /** How to exclude this for checkbox and radio? */
-  .listboxprops .list-item.vlist.S::before, .listboxprops .list-item.vlist.selected::before  {
+  .listboxprops .list-item.vlist.S::before {
     content: "✔";
     color: #fff;
     flex-grow: inherit;

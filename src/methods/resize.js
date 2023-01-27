@@ -10,43 +10,66 @@ export default function ($element, layout) {
   var maxListHeight = 85;
 
   if ($$scope.ui == "listbox") {
-    if ($$scope.height > maxListHeight) {
-      console.log("h > maxListHeight");
-      $$scope.showListbox = true;
-      $$scope.showDropdown = false;
-      $$scope.listboxStyle = '';
-    } else {
-	    console.log("h < maxListHeight");
-      $$scope.showListbox = false;
-      $$scope.showDropdown = true;
-	    $$scope.listboxStyle = {'position' : 'fixed', 'width' : $$scope.width + 'px'}
+    if ($$scope.mode !== "edit") {
+      if ($$scope.height > maxListHeight) {
+        console.log("h > maxListHeight");
+        $$scope.showListbox = true;
+        $$scope.showDropdown = false;
+        $$scope.listboxStyle = "";
+        $(".listbox-selection-toolbar").css({display : 'flex'});
+      } else {
+        console.log("h < maxListHeight");
+        $$scope.showListbox = false;
+        $$scope.showDropdown = true;
+        $$scope.listboxStyle = {
+          position: "fixed",
+          width: $$scope.width + "px",
+        };
+      }
     }
-  }
-  else if ($$scope.ui == "buttongroup") {
+    else {
+      if ($(".listbox-selection-toolbar").length > 0) {
+         console.log("toolbar in edit mode exists , we need to remove")
+        $(".listbox-selection-toolbar").css({display : 'none'});
+      }
+      else{
+        $(".listbox-selection-toolbar").css({display : 'flex'});
+      }
+    }
+  } else if ($$scope.ui == "buttongroup") {
     if ($$scope.height > maxListHeight) {
       console.log("h > maxListHeight");
       $$scope.showButtongroup = true;
-	    $$scope.showDropdown = false;
+      $$scope.showDropdown = false;
     } else {
-	    console.log("h < maxListHeight");
+      console.log("h < maxListHeight");
       $$scope.showButtongroup = false;
       $$scope.showDropdown = true;
       $$scope.listboxStyle = { position: "fixed", width: $$scope.width + "px" };
     }
-  }
-  else if ($$scope.ui == "dropdown") {
-    if ($$scope.height > maxListHeight) {
-      console.log("h > maxListHeight");
-      $$scope.showButtongroup = false;
-      $$scope.showListbox = false;
-	    $$scope.showDropdown = true;
+  } else if ($$scope.ui == "dropdown") {
+    if ($$scope.mode !== "edit") {
+      if ($$scope.height > maxListHeight) {
+        console.log("h > maxListHeight");
+        $$scope.showButtongroup = false;
+        $$scope.showListbox = false;
+        $$scope.showDropdown = true;
+      } else {
+        console.log("h < maxListHeight");
+        $$scope.showButtongroup = false;
+        $$scope.showListbox = false;
+        $$scope.showDropdown = true;
+        $$scope.listboxStyle = {
+          position: "fixed",
+          width: $$scope.width + "px",
+        };
+      }
     } else {
-	    console.log("h < maxListHeight");
-      $$scope.showButtongroup = false;
-      $$scope.showListbox = false;
-      $$scope.showDropdown = true;
-      $$scope.listboxStyle = { position: "fixed", width: $$scope.width + "px" };
+      if ($(".dropdown-list .listbox.active").length > 0) {
+        if ($(".dropdown-list .listbox").hasClass("active")) {
+          $(".dropdown-list .listbox.active").removeClass("active");
+        }
+      }
     }
   }
-
 }
