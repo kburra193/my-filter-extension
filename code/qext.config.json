@@ -1,9 +1,0 @@
-{
-  "extension": "code",
-  "output": "./dist",
-  "compile": {
-    "entry": "./src/index.js",
-    "qext": "./src/index.qext",
-    "static": "./static"
-  }
-}
