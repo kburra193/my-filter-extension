@@ -27,17 +27,17 @@
         <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
         <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
         <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
-        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectExcluded">Select Excluded</span>
+        <span  ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded">Select Excluded</span>
         <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
-        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectPossible">Select Possible</span>
+        <span  ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible">Select Possible</span>
         <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
-        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAlternative">Select Alternative</span>
+        <span  ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative">Select Alternative</span>
         <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
-        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableClearAll">Clear All</span>
+        <span  ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll">Clear All</span>
         <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
-        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableLockField">Lock Field</span>
+        <span  ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField">Lock Field</span>
         <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
-        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableUnlockField">Unlock Field</span>
+        <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
       </div>
       <div class="listboxprops">
         <div class="search-container" ng-show="IsVisibleSearch">
@@ -77,22 +77,22 @@
       <span class="lui-icon--search  lui-icon search-icon" title="Search" ng-click="toggleSearchbar()"></span>
       <span>{{ dimensionsLabel }}</span>
     </div>
-    <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
-      <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
-      <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectExcluded">Select Excluded</span>
-      <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectPossible">Select Possible</span>
-      <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAlternative">Select Alternative</span>
-      <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableClearAll">Clear All</span>
-      <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableLockField">Lock Field</span>
-      <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableUnlockField">Unlock Field</span>
-    </div>
+  <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
+        <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
+        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
+        <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
+        <span  ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded">Select Excluded</span>
+        <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
+        <span  ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible">Select Possible</span>
+        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
+        <span  ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative">Select Alternative</span>
+        <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
+        <span  ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll">Clear All</span>
+        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
+        <span  ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField">Lock Field</span>
+        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
+        <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
+      </div>
     <div class="listboxprops">
       <div class="search-container" ng-show="IsVisibleSearch">
         <span class="lui-icon--search  lui-icon"></span>
@@ -129,22 +129,22 @@
           class="lui-icon lui-icon--menu" ng-click="toggleSelectionMenuItems()"></span></span>
       <span>{{ dimensionsLabel }}</span>
     </div>
-    <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
-      <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
-      <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectExcluded">Select Excluded</span>
-      <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectPossible">Select Possible</span>
-      <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAlternative">Select Alternative</span>
-      <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableClearAll">Clear All</span>
-      <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableLockField">Lock Field</span>
-      <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
-      <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableUnlockField">Unlock Field</span>
-    </div>
+  <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
+        <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
+        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
+        <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
+        <span  ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded">Select Excluded</span>
+        <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
+        <span  ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible">Select Possible</span>
+        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
+        <span  ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative">Select Alternative</span>
+        <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
+        <span  ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll">Clear All</span>
+        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
+        <span  ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField">Lock Field</span>
+        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
+        <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
+      </div>
     <div class="buttongroupprops">
       <button class="button-item" ng-class="[row.qState]" ng-mousedown="startDrag(row.qElemNumber);"
       ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="BtnGroupStyle">
