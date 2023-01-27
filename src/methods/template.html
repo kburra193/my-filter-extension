@@ -1,156 +1,156 @@
 <div class="chart-container" ng-attr-id="custom-filter-{{ qId }}">
-  <!--------------------------------------------UI Dropdown--------------------------------------------------------------->
-  <div ng-if="showDropdown" class="dropdown-list">
-    <!-- TOGGLE -->
-    <button class="dropdown-toggle lui-button" ng-click="onDropdownToggleClick($event)" ng-style="dropdownStyle">
+   <!--------------------------------------------UI Dropdown--------------------------------------------------------------->
+   <div ng-if="showDropdown" class="dropdown-list">
+      <!-- TOGGLE -->
+      <button class="dropdown-toggle lui-button" ng-click="onDropdownToggleClick($event)" ng-style="dropdownStyle">
       <span ng-style="HeaderStyle">{{dimensionsLabel}}</span>
       <span class="lui-button__caret  lui-caret buttoncaret" style="float: right;"></span>
-    </button>
-    <!-- DROPDOWN OPTIONS -->
-     <div class="listbox lui-popover">
-      <div class="dropdown-listbox-selection-toolbar">
-        <div class="iconsMenu">
-          <span  title="Show Selections menu" ng-style="enableSelectionsMenu"><span
-              class="lui-icon lui-icon--menu" ng-click="toggleSelectionMenuItems()"></span></span>
-          <span class="lui-icon--search lui-icon search-icon" title="Search" ng-click="toggleSearchbar()"></span>
-        </div>
-        <div>
-          <button id="cancel-sel-button" title="Cancel Selection" class="lui-button  lui-button--danger" ng-click="endSelections(false)">
-            <i class="lui-icon lui-icon--close rm-pointer-events"></i>
-          </button>
-          <button id="confirm-sel-button" title="Confirm Selection" class="lui-button  lui-button--success" ng-click="endSelections(true)">
-            <i class="lui-icon lui-icon--tick rm-pointer-events">
-          </button>
-        </div>
+      </button>
+      <!-- DROPDOWN OPTIONS -->
+      <div class="listbox lui-popover">
+         <div class="dropdown-listbox-selection-toolbar">
+            <div class="iconsMenu">
+               <span  title="Show Selections menu" ng-style="enableSelectionsMenu"><span
+                  class="lui-icon lui-icon--menu" ng-click="toggleSelectionMenuItems()"></span></span>
+               <span class="lui-icon--search lui-icon search-icon" title="Search" ng-click="toggleSearchbar()"></span>
+            </div>
+            <div>
+               <button id="cancel-sel-button" title="Cancel Selection" class="lui-button  lui-button--danger" ng-click="endSelections(false)">
+               <i class="lui-icon lui-icon--close rm-pointer-events"></i>
+               </button>
+               <button id="confirm-sel-button" title="Confirm Selection" class="lui-button  lui-button--success" ng-click="endSelections(true)">
+               <i class="lui-icon lui-icon--tick rm-pointer-events">
+               </button>
+            </div>
+         </div>
+         <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
+            <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
+            <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
+            <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
+            <span  ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded">Select Excluded</span>
+            <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
+            <span  ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible">Select Possible</span>
+            <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
+            <span  ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative">Select Alternative</span>
+            <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
+            <span  ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll">Clear All</span>
+            <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
+            <span  ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField">Lock Field</span>
+            <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
+            <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
+         </div>
+         <div class="listboxprops">
+            <div class="search-container" ng-show="IsVisibleSearch">
+               <span class="lui-icon--search  lui-icon"></span>
+               <input class="search-input" type="text" class="form-control" placeholder="Search" ng-model="searchValue"
+                  ng-keyup="searchFieldDataForString(searchValue)"></input>
+               <span ng-show="searchValue" id="searchClearButton" class="lui-icon--close lui-icon"
+                  ng-click="clearsearchValue()"></span>
+            </div>
+            <div class="list-item"
+               ng-class="[row.qState, listUiType , (listUiType == 'luicheckbox' || listUiType == 'luiradio') ? 'pushText' : '']"
+               ng-mousedown="startDrag(row.qElemNumber);"
+               ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="CellStyle">
+               <span ng-if="listUiType == 'luicheckbox'" class="checkbox"></span>
+               <span ng-if="listUiType == 'luiradio'" class="radiobtn"></span>
+               <span class="list-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
+               <span class="list-item-frequency">{{ row.qFrequency }}</span>
+            </div>
+            <!--TOODO: check cardinality of list and disable button when reached -->
+            <button ng-hide="IsVisibleSearch || IsVisibleSelectionsMenuItems" type="button" class="lui-button" id="loadMore" ng-click="paginateList()">Load
+            more</button>
+         </div>
+      </div>
+   </div>
+   <!--------------------------------------------UI Listbox--------------------------------------------------------------->
+   <!-- code for listbox -->
+   <div class="listbox" ng-if="showListbox">
+      <div ng-show="showSelectionToolbar" class="listbox-selection-toolbar">
+         <button id="cancel-sel-button" class="lui-button  lui-button--danger" ng-click="endSelections(false)"><i
+            class="lui-icon lui-icon--close rm-pointer-events"></i></button>
+         <button id="confirm-sel-button" class="lui-button  lui-button--success" ng-click="endSelections(true)"><i
+            class="lui-icon lui-icon--tick rm-pointer-events"></button>
+      </div>
+      <div class="label-header" ng-style="HeaderStyle">
+         <span class="selectionsMenu" title="Show Selections menu" ng-style="enableSelectionsMenu"><span
+            class="lui-icon lui-icon--menu" ng-click="toggleSelectionMenuItems()"></span></span>
+         <span class="lui-icon--search  lui-icon search-icon" title="Search" ng-click="toggleSearchbar()"></span>
+         <span>{{ dimensionsLabel }}</span>
       </div>
       <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
-        <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
-        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
-        <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
-        <span  ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded">Select Excluded</span>
-        <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
-        <span  ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible">Select Possible</span>
-        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
-        <span  ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative">Select Alternative</span>
-        <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
-        <span  ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll">Clear All</span>
-        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
-        <span  ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField">Lock Field</span>
-        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
-        <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
+         <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
+         <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
+         <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
+         <span  ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded">Select Excluded</span>
+         <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
+         <span  ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible">Select Possible</span>
+         <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
+         <span  ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative">Select Alternative</span>
+         <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
+         <span  ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll">Clear All</span>
+         <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
+         <span  ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField">Lock Field</span>
+         <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
+         <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
       </div>
       <div class="listboxprops">
-        <div class="search-container" ng-show="IsVisibleSearch">
-          <span class="lui-icon--search  lui-icon"></span>
-          <input class="search-input" type="text" class="form-control" placeholder="Search" ng-model="searchValue"
-            ng-keyup="searchFieldDataForString(searchValue)"></input>
-          <span ng-show="searchValue" id="searchClearButton" class="lui-icon--close lui-icon"
-            ng-click="clearsearchValue()"></span>
-        </div>
-        <div class="list-item"
-        ng-class="[row.qState, listUiType , (listUiType == 'luicheckbox' || listUiType == 'luiradio') ? 'pushText' : '']"
-        ng-mousedown="startDrag(row.qElemNumber);"
-        ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="CellStyle">
-        <span ng-if="listUiType == 'luicheckbox'" class="checkbox"></span>
-        <span ng-if="listUiType == 'luiradio'" class="radiobtn"></span>
-        <span class="list-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
-        <span class="list-item-frequency">{{ row.qFrequency }}</span>
+         <div class="search-container" ng-show="IsVisibleSearch">
+            <span class="lui-icon--search  lui-icon"></span>
+            <input class="search-input" type="text" class="form-control" placeholder="Search" ng-model="searchValue"
+               ng-keyup="searchFieldDataForString(searchValue)"></input>
+            <span ng-show="searchValue" id="searchClearButton" class="lui-icon--close lui-icon"
+               ng-click="searchValue = ''; clearsearchValue()"></span>
+         </div>
+         <div class="list-item"
+            ng-class="[row.qState, listUiType , (listUiType == 'luicheckbox' || listUiType == 'luiradio') ? 'pushText' : '']"
+            ng-mousedown="startDrag(row.qElemNumber);"
+            ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="CellStyle">
+            <span ng-if="listUiType == 'luicheckbox'" class="checkbox"></span>
+            <span ng-if="listUiType == 'luiradio'" class="radiobtn"></span>
+            <span class="list-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
+            <span class="list-item-frequency">{{ row.qFrequency }}</span>
+         </div>
+         <!-- TOODO: check cardinality of list and disable button when reached -->
+         <button ng-hide="IsVisibleSearch || IsVisibleSelectionsMenuItems" type="button" class="lui-button" id="loadMore" ng-click="paginateList()">Load
+         more</button>
       </div>
-        <!--TOODO: check cardinality of list and disable button when reached -->
-        <button ng-hide="IsVisibleSearch || IsVisibleSelectionsMenuItems" type="button" class="lui-button" id="loadMore" ng-click="paginateList()">Load
-          more</button>
+   </div>
+   <!--------------------------------------------UI Button Group--------------------------------------------------------------->
+   <!-- code for button group -->
+   <div class="buttongroup" ng-if="showButtongroup">
+      <div ng-show="showSelectionToolbar" class="buttongroup-selection-toolbar">
+         <button id="cancel-sel-button" class="lui-button  lui-button--danger" ng-click="endSelections(false)"><i
+            class="lui-icon lui-icon--close rm-pointer-events"></i></button>
+         <button id="confirm-sel-button" class="lui-button  lui-button--success" ng-click="endSelections(true)"><i
+            class="lui-icon lui-icon--tick rm-pointer-events"></button>
       </div>
-    </div>
-  </div>
-  <!--------------------------------------------UI Listbox--------------------------------------------------------------->
-  <!-- code for listbox -->
-  <div class="listbox" ng-if="showListbox">
-    <div ng-show="showSelectionToolbar" class="listbox-selection-toolbar">
-      <button id="cancel-sel-button" class="lui-button  lui-button--danger" ng-click="endSelections(false)"><i
-          class="lui-icon lui-icon--close rm-pointer-events"></i></button>
-      <button id="confirm-sel-button" class="lui-button  lui-button--success" ng-click="endSelections(true)"><i
-          class="lui-icon lui-icon--tick rm-pointer-events"></button>
-    </div>
-    <div class="label-header" ng-style="HeaderStyle">
-      <span class="selectionsMenu" title="Show Selections menu" ng-style="enableSelectionsMenu"><span
-          class="lui-icon lui-icon--menu" ng-click="toggleSelectionMenuItems()"></span></span>
-      <span class="lui-icon--search  lui-icon search-icon" title="Search" ng-click="toggleSearchbar()"></span>
-      <span>{{ dimensionsLabel }}</span>
-    </div>
-  <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
-        <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
-        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
-        <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
-        <span  ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded">Select Excluded</span>
-        <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
-        <span  ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible">Select Possible</span>
-        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
-        <span  ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative">Select Alternative</span>
-        <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
-        <span  ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll">Clear All</span>
-        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
-        <span  ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField">Lock Field</span>
-        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
-        <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
+      <div class="label-header" ng-style="HeaderStyle">
+         <span class="selectionsMenu" title="Show Selections menu" ng-style="enableSelectionsMenu"><span
+            class="lui-icon lui-icon--menu" ng-click="toggleSelectionMenuItems()"></span></span>
+         <span>{{ dimensionsLabel }}</span>
       </div>
-    <div class="listboxprops">
-      <div class="search-container" ng-show="IsVisibleSearch">
-        <span class="lui-icon--search  lui-icon"></span>
-        <input class="search-input" type="text" class="form-control" placeholder="Search" ng-model="searchValue"
-          ng-keyup="searchFieldDataForString(searchValue)"></input>
-        <span ng-show="searchValue" id="searchClearButton" class="lui-icon--close lui-icon"
-          ng-click="searchValue = ''; clearsearchValue()"></span>
+      <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
+         <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
+         <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
+         <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
+         <span  ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded">Select Excluded</span>
+         <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
+         <span  ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible">Select Possible</span>
+         <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
+         <span  ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative">Select Alternative</span>
+         <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
+         <span  ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll">Clear All</span>
+         <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
+         <span  ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField">Lock Field</span>
+         <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
+         <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
       </div>
-      <div class="list-item"
-        ng-class="[row.qState, listUiType , (listUiType == 'luicheckbox' || listUiType == 'luiradio') ? 'pushText' : '']"
-        ng-mousedown="startDrag(row.qElemNumber);"
-        ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="CellStyle">
-        <span ng-if="listUiType == 'luicheckbox'" class="checkbox"></span>
-        <span ng-if="listUiType == 'luiradio'" class="radiobtn"></span>
-        <span class="list-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
-        <span class="list-item-frequency">{{ row.qFrequency }}</span>
+      <div class="buttongroupprops">
+         <button class="button-item" ng-class="[row.qState]" ng-mousedown="startDrag(row.qElemNumber);"
+            ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="BtnGroupStyle">
+         <span class="button-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
+         <span class="button-item-frequency">{{ row.qFrequency }}</span>
+         </button>
       </div>
-      <!-- TOODO: check cardinality of list and disable button when reached -->
-      <button ng-hide="IsVisibleSearch || IsVisibleSelectionsMenuItems" type="button" class="lui-button" id="loadMore" ng-click="paginateList()">Load
-        more</button>
-    </div>
-  </div>
-  <!--------------------------------------------UI Button Group--------------------------------------------------------------->
-  <!-- code for button group -->
-  <div class="buttongroup" ng-if="showButtongroup">
-    <div ng-show="showSelectionToolbar" class="buttongroup-selection-toolbar">
-      <button id="cancel-sel-button" class="lui-button  lui-button--danger" ng-click="endSelections(false)"><i
-          class="lui-icon lui-icon--close rm-pointer-events"></i></button>
-      <button id="confirm-sel-button" class="lui-button  lui-button--success" ng-click="endSelections(true)"><i
-          class="lui-icon lui-icon--tick rm-pointer-events"></button>
-    </div>
-    <div class="label-header" ng-style="HeaderStyle">
-      <span class="selectionsMenu" title="Show Selections menu" ng-style="enableSelectionsMenu"><span
-          class="lui-icon lui-icon--menu" ng-click="toggleSelectionMenuItems()"></span></span>
-      <span>{{ dimensionsLabel }}</span>
-    </div>
-  <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
-        <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
-        <span  ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll">Select All</span>
-        <span class="lui-icon lui-icon--select-excluded" ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded"></span>
-        <span  ng-click="selectionsMenuBar('selectExcluded')" ng-style="enableSelectExcluded">Select Excluded</span>
-        <span class="lui-icon lui-icon--select-possible" ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible"></span>
-        <span  ng-click="selectionsMenuBar('selectPossible')" ng-style="enableSelectPossible">Select Possible</span>
-        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative"></span>
-        <span  ng-click="selectionsMenuBar('selectAlternative')" ng-style="enableSelectAlternative">Select Alternative</span>
-        <span class="lui-icon lui-icon--clear-selections" ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll"></span>
-        <span  ng-click="selectionsMenuBar('clearAll')" ng-style="enableClearAll">Clear All</span>
-        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField"></span>
-        <span  ng-click="selectionsMenuBar('lockField')" ng-style="enableLockField">Lock Field</span>
-        <span class="lui-icon lui-icon--select-alternative" ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField"></span>
-        <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
-      </div>
-    <div class="buttongroupprops">
-      <button class="button-item" ng-class="[row.qState]" ng-mousedown="startDrag(row.qElemNumber);"
-      ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="BtnGroupStyle">
-        <span class="button-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
-        <span class="button-item-frequency">{{ row.qFrequency }}</span>
-      </button>
-    </div>
-  </div>
+   </div>
 </div>
