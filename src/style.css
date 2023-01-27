@@ -2,8 +2,7 @@
   height: 100%;
 }
 /* dropdown css*/
-.chart-container
-.dropdown-toggle {
+.chart-container .dropdown-toggle {
   font-size: 0.75rem;
   padding: 0px;
   min-width: 0;
@@ -26,6 +25,7 @@
 }
 .dropdown-list .listbox.active {
   display: block;
+  height: 100%;
 }
 .dropdown-header {
   display: flex;
@@ -45,7 +45,7 @@
 .rm-pointer-events {
   pointer-events: none;
 }
-.iconsMenu{
+.iconsMenu {
   margin-left: -12px;
 }
 .dropdown-listbox-selection-toolbar {
@@ -89,27 +89,32 @@
   width: auto;
 }
 .listbox {
-  height: 100%;
+  position: relative;
+  height: inherit;
   box-shadow: none;
   box-sizing: border-box;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
   background-color: white;
-  overflow-y: scroll;
 }
 
 /* .listbox:hover {
   overflow-y: scroll;
 } */
 .listboxprops {
-  position: relative;
+  position: absolute;
+  height: calc(100% - 32px);
+  width: 100%;
+  overflow-y: scroll;
 }
 
 .listboxprops #loadMore {
   display: table;
   margin: 0 auto;
 }
-
+.paginate-button-item{
+  top: 0.5rem;
+}
 .listbox .list-item {
   display: block;
   list-style: none;
@@ -182,6 +187,16 @@
 }
 
 /* button group css*/
+.buttongroup{
+  position: relative;
+  height: inherit;
+  box-shadow: none;
+  box-sizing: border-box;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background-color: white;
+  overflow-y: auto;
+}
 .buttongroup-selection-toolbar {
   display: flex;
   flex-direction: row;
@@ -201,12 +216,11 @@
   width: auto;
 }
 .buttongroupprops {
-  border: 1px solid #bebebe;
-  border-radius: 4px;
-  box-shadow: none;
-  box-sizing: border-box;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
 }
-
 .button-item {
   position: relative;
   overflow-y: auto;
@@ -218,32 +232,16 @@
   min-width: 28px;
   outline: none;
   padding: 0 15px;
+  top: 10px;
   transition: border-color 0.2s ease-out;
   vertical-align: middle;
 }
 .button-item .button-item-frequency {
   float: right;
 }
-.button-item.O {
-  background-color: white;
-}
-.button-item.S {
-  stroke-width: 1;
-  stroke: #666 !important;
-  opacity: 1;
-  background-color: #009845 !important;
-  color: #fff !important;
-}
-.button-item.A {
-  background-color: lightgray !important;
-}
-.button-item.X {
-  background-color: #e6e6e6 !important;
-}
 .button-item:hover {
   box-shadow: 0 0 8px rgba(0, 128, 0, 0.1);
   font-weight: bold;
-  border: 1px solid rgb(0, 128, 0);
 }
 .button-item.stateS:hover {
   color: white !important;
@@ -259,32 +257,12 @@
   cursor: pointer;
   opacity: 0.8;
 }
-
-.label-header .selectionsMenuItems {
-  border-bottom: 1px solid #d9d9d9;
-  cursor: default;
-  display: flex !important;
-  flex-direction: row !important;
-  line-height: 38px;
-  white-space: normal;
-  width: 100%;
-  justify-content: space-evenly;
-  z-index: 1001;
-}
-.selectionsMenuItems .selectionsMenuItemsList {
+.selectionsMenuItems{
   cursor: pointer;
   line-height: 38px;
-  padding: 5px;
-  font-size: 12px !important;
+  font-size: 11px !important;
+  border-bottom: 1px solid #d9d9d9;
 }
-
-/* TO DO HOVER
- .selectionsMenuItems .selectionsMenuItemsList:hover {
-  height: 50%;
-  background-color: #595959;
-  color: #fafafa;
-} */
-
 /* Create a custom checkbox */
 .listboxprops .list-item .checkbox {
   height: 1rem;
@@ -300,15 +278,7 @@
 .listboxprops .list-item .checkbox:hover {
   background-color: #ccc;
 }
-/* When the checkbox is checked, add a tick */
-.listboxprops .list-item.S .checkbox::before {
-  content: "✔";
-  font-weight: 800;
-  left: 3px;
-  top: -1px;
-  color: #009845;
-  position: absolute;
-}
+
 /* Create a custom radioBtn */
 .listboxprops .list-item .radiobtn {
   height: 1rem;
@@ -334,31 +304,53 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  color: #009845;
   position: absolute;
 }
-
 /* Change Scrollbar style */
-.listbox::-webkit-scrollbar {
+.listbox::-webkit-scrollbar,.listboxprops::-webkit-scrollbar {
   height: 12px;
   width: 0.4em;
   border-radius: 4px;
 }
-.listbox::-webkit-scrollbar-track {
+.listbox::-webkit-scrollbar,.listboxprops::-webkit-scrollbar-track {
   background: #f2f2f2;
 }
-.listbox::-webkit-scrollbar-thumb {
+.listbox::-webkit-scrollbar,.listboxprops::-webkit-scrollbar-thumb {
   background: #ddd;
 }
-.listbox:hover::-webkit-scrollbar-thumb {
+.listbox::-webkit-scrollbar,.listboxprops:hover::-webkit-scrollbar-thumb {
   background: #bbb;
 }
-.listbox::-webkit-scrollbar-thumb:horizontal:hover,
-.listbox::-webkit-scrollbar-thumb:vertical:hover {
+.listbox::-webkit-scrollbar,.listboxprops::-webkit-scrollbar-thumb:horizontal:hover,
+.listbox::-webkit-scrollbar,.listboxprops::-webkit-scrollbar-thumb:vertical:hover {
   background: #999;
   cursor: pointer;
 }
-.listbox::-webkit-scrollbar-thumb:horizontal:active,
-.listbox::-webkit-scrollbar-thumb:vertical:active {
-  background: #777;
+.listbox::-webkit-scrollbar,.listboxprops::-webkit-scrollbar-thumb:horizontal:active,
+.listbox::-webkit-scrollbar,.listboxprops::-webkit-scrollbar-thumb:vertical:active {
+  background: #ccc;
+}
+
+.buttongroup::-webkit-scrollbar,.buttongroupprops::-webkit-scrollbar {
+  height: 12px;
+  width: 0.4em;
+  border-radius: 4px;
+}
+.buttongroup::-webkit-scrollbar,.buttongroupprops::-webkit-scrollbar-track {
+  background: #f2f2f2;
+}
+.buttongroup::-webkit-scrollbar,.buttongroupprops::-webkit-scrollbar-thumb {
+  background: #ddd;
+}
+.buttongroup::-webkit-scrollbar,.buttongroupprops:hover::-webkit-scrollbar-thumb {
+  background: #bbb;
+}
+.buttongroup::-webkit-scrollbar,.buttongroupprops::-webkit-scrollbar-thumb:horizontal:hover,
+.buttongroup::-webkit-scrollbar,.buttongroupprops::-webkit-scrollbar-thumb:vertical:hover {
+  background: #999;
+  cursor: pointer;
+}
+.buttongroup::-webkit-scrollbar,.buttongroupprops::-webkit-scrollbar-thumb:horizontal:active,
+.buttongroup::-webkit-scrollbar,.buttongroupprops::-webkit-scrollbar-thumb:vertical:active {
+  background: #ccc;
 }
