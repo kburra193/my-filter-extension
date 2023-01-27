@@ -648,9 +648,6 @@ export default async function ($element, layout) {
   position: absolute;
   }
   /* to remove some padding listbox */
-  #custom-filter-${$$scope.qId} .qv-inner-object {
-    padding: 0px !important;
-  }
   article:has(#custom-filter-${$$scope.qId} .active){
     z-index: 1020;
   }
