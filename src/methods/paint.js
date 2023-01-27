@@ -585,36 +585,35 @@ export default async function ($element, layout) {
     sheet = sheet[0];
   }
   document.body.appendChild(sheet);
-  sheet.innerHTML = `
-  header#${$$scope.qId}_title { display: none; }
+  sheet.innerHTML = `header#${$$scope.qId}_title { display: none; }
   #custom-filter-${$$scope.qId} .listbox .list-item.A {
     background-color: ${layout.ListItemAlternateBgColorPicker.color} !important;
-    color: #595959 !important;
+    color: ${layout.ListItemFontColorPicker.color} !important;
     border-bottom: 1px solid #fff !important;
   }
   #custom-filter-${$$scope.qId} .listbox .list-item.O {
     background-color: ${layout.ListItemPossibleBgColorPicker.color} !important;
-    color: #595959 !important;
+    color: ${layout.ListItemFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .listbox .list-item.X {
-    color: #fff !important;
+    color: ${layout.ListItemFontColorPicker.color} !important;
     background-color: ${layout.ListItemExcludedBgColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .listbox .list-item.S {
     background-color: ${layout.ListItemSelectedBgColorPicker.color} !important;
-    color: #fff !important;
+    color: ${layout.ListItemFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .button-item.A {
     background-color: ${layout.ListItemAlternateBgColorPicker.color} !important;
-    color: #595959 !important;
+    color: ${layout.ListItemFontColorPicker.color} !important;
     border-bottom: 1px solid #fff !important;
   }
   #custom-filter-${$$scope.qId} .button-item.O {
     background-color: ${layout.ListItemPossibleBgColorPicker.color} !important;
-    color: #595959 !important;
+    color: ${layout.ListItemFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .button-item.X {
@@ -624,7 +623,7 @@ export default async function ($element, layout) {
   }
   #custom-filter-${$$scope.qId} .button-item.S {
     background-color: ${layout.ListItemSelectedBgColorPicker.color} !important;
-    color: #fff !important;
+    color: ${layout.ListItemFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   /* When the checkbox is checked, add a tick */
@@ -647,7 +646,7 @@ export default async function ($element, layout) {
   color: ${layout.ListItemSelectedBgColorPicker.color} !important;
   position: absolute;
   }
-  /* to remove some padding listbox */
+  
   article:has(#custom-filter-${$$scope.qId} .active){
     z-index: 1020;
   }
