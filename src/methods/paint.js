@@ -30,13 +30,13 @@ export default async function ($element, layout) {
   $$scope.mode = qlik.navigation.getMode();
   $$scope.height = $element.height();
   $$scope.width = $element.width();
-  //console.log("paint layout", layout);
   $$scope.qId = layout.qInfo.qId;
   $$scope.dimensionsLabel = layout.qListObject.qDimensionInfo.qFallbackTitle;
   $$scope.rows = layout.qListObject.qDataPages[0].qMatrix.flat();
   $$scope.listUiType = layout.SelectionUIType;
   var qTop = 0;
   var qHeight = 200;
+
   //Create Session Object for Selections and Search Functionality
   var listObj = self.backendApi.model;
   //Paginate
@@ -53,11 +53,14 @@ export default async function ($element, layout) {
   var multiSelect = layout.multiSelect;
   var defaultSelection = layout.defaultSelection,
     defaultvalue,
-    hasSelection = this.backendApi.hasSelections();
+    selectioncount =
+      listObj.layout.qListObject.qDimensionInfo.qStateCounts.qSelected;
   var selectAlsoThese = layout.selectAlsoThese;
   var defaultselectionList = selectAlsoThese.split(",");
   var data = [];
   var multipleselectValues = [];
+  var selected = 0;
+
   // Logic for Single Default Values
   if (enableSelections && multiSelect == false) {
     layout.qListObject.qDataPages[0].qMatrix.forEach(function (row) {
@@ -65,13 +68,18 @@ export default async function ($element, layout) {
         defaultvalue = row[0].qElemNumber;
       }
     });
-    if (!hasSelection) {
-      self.backendApi.selectValues(0, [defaultvalue], true);
+    if (selectioncount == 0) {
+      listObj.selectListObjectValues({
+        qPath: "/qListObjectDef",
+        qValues: [defaultvalue],
+        qToggleMode: true, // true for multi select
+        //qSoftLock: true,
+      });
     }
   }
-  // Logic for Multiple Default Values
+  //Logic for Multiple Default Values
   if (enableSelections && multiSelect == true && selectAlsoThese) {
-    this.backendApi.eachDataRow(function (rownum, row) {
+    layout.qListObject.qDataPages[0].qMatrix.forEach(function (row) {
       if (row[0].qState === "S") {
         selected = 1;
       }
@@ -79,7 +87,7 @@ export default async function ($element, layout) {
     });
     for (var i = 0; i < data.length; i++) {
       var text = data[i].qText;
-      if (!hasSelection) {
+      if (selectioncount == 0) {
         if (defaultselectionList.length > 0) {
           for (var v = 0; v < defaultselectionList.length; v++) {
             if (data[i].qText == defaultselectionList[v]) {
@@ -91,13 +99,17 @@ export default async function ($element, layout) {
         multipleselectValues.push(data[i].qElemNumber);
       }
     }
-    if (!hasSelection) {
-      self.backendApi.selectValues(0, multipleselectValues, true);
+    if (selectioncount == 0) {
+      listObj.selectListObjectValues({
+        qPath: "/qListObjectDef",
+        qValues: multipleselectValues,
+        qToggleMode: true, // true for multi select
+        //qSoftLock: true,
+      });
     }
   }
 
   var elNumbersToSelect = [];
-  // var elNumbersToTempActivate = [];
   //Logic for Drag Select
   var currentStartDrgElNum;
   $$scope.startDrag = function (elNum) {
@@ -585,35 +597,36 @@ export default async function ($element, layout) {
     sheet = sheet[0];
   }
   document.body.appendChild(sheet);
-  sheet.innerHTML = `header#${$$scope.qId}_title { display: none; }
+  sheet.innerHTML = `
+  header#${$$scope.qId}_title { display: none; }
   #custom-filter-${$$scope.qId} .listbox .list-item.A {
     background-color: ${layout.ListItemAlternateBgColorPicker.color} !important;
-    color: ${layout.ListItemFontColorPicker.color} !important;
+    color: #595959 !important;
     border-bottom: 1px solid #fff !important;
   }
   #custom-filter-${$$scope.qId} .listbox .list-item.O {
     background-color: ${layout.ListItemPossibleBgColorPicker.color} !important;
-    color: ${layout.ListItemFontColorPicker.color} !important;
+    color: #595959 !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .listbox .list-item.X {
-    color: ${layout.ListItemFontColorPicker.color} !important;
+    color: #fff !important;
     background-color: ${layout.ListItemExcludedBgColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .listbox .list-item.S {
     background-color: ${layout.ListItemSelectedBgColorPicker.color} !important;
-    color: ${layout.ListItemFontColorPicker.color} !important;
+    color: #fff !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .button-item.A {
     background-color: ${layout.ListItemAlternateBgColorPicker.color} !important;
-    color: ${layout.ListItemFontColorPicker.color} !important;
+    color: #595959 !important;
     border-bottom: 1px solid #fff !important;
   }
   #custom-filter-${$$scope.qId} .button-item.O {
     background-color: ${layout.ListItemPossibleBgColorPicker.color} !important;
-    color: ${layout.ListItemFontColorPicker.color} !important;
+    color: #595959 !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .button-item.X {
@@ -623,7 +636,7 @@ export default async function ($element, layout) {
   }
   #custom-filter-${$$scope.qId} .button-item.S {
     background-color: ${layout.ListItemSelectedBgColorPicker.color} !important;
-    color: ${layout.ListItemFontColorPicker.color} !important;
+    color: #fff !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   /* When the checkbox is checked, add a tick */
@@ -646,7 +659,10 @@ export default async function ($element, layout) {
   color: ${layout.ListItemSelectedBgColorPicker.color} !important;
   position: absolute;
   }
-  
+  /* to remove some padding listbox */
+  #custom-filter-${$$scope.qId} .qv-inner-object {
+    padding: 0px !important;
+  }
   article:has(#custom-filter-${$$scope.qId} .active){
     z-index: 1020;
   }
