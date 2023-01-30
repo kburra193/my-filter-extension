@@ -5,7 +5,6 @@ export default [
   "$element",
   "$sce",
   async function ($scope, $element, $sce) {
-    console.log("controller $scope", $scope);
     // Toggle Dropdown
     $scope.onDropdownToggleClick = function (event) {
       if ($scope.mode != "analysis") return;
