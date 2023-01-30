@@ -659,10 +659,6 @@ export default async function ($element, layout) {
   color: ${layout.ListItemSelectedBgColorPicker.color} !important;
   position: absolute;
   }
-  /* to remove some padding listbox */
-  #custom-filter-${$$scope.qId} .qv-inner-object {
-    padding: 0px !important;
-  }
   article:has(#custom-filter-${$$scope.qId} .active){
     z-index: 1020;
   }
