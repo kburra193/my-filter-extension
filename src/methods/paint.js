@@ -72,7 +72,7 @@ export default async function ($element, layout) {
       listObj.selectListObjectValues({
         qPath: "/qListObjectDef",
         qValues: [defaultvalue],
-        qToggleMode: false, // true for multi select
+        qToggleMode:false, // true for multi select
         //qSoftLock: true,
       });
     }
@@ -606,7 +606,7 @@ export default async function ($element, layout) {
   }
   #custom-filter-${$$scope.qId} .listbox .list-item.O {
     background-color: ${layout.ListItemPossibleBgColorPicker.color} !important;
-    color: #595959 !important;
+    color:  ${layout.ListItemFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .listbox .list-item.X {
@@ -626,7 +626,7 @@ export default async function ($element, layout) {
   }
   #custom-filter-${$$scope.qId} .button-item.O {
     background-color: ${layout.ListItemPossibleBgColorPicker.color} !important;
-    color: #595959 !important;
+    color: ${layout.BtnFontActiveColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .button-item.X {
@@ -659,6 +659,10 @@ export default async function ($element, layout) {
   color: ${layout.ListItemSelectedBgColorPicker.color} !important;
   position: absolute;
   }
+  /* to remove some padding listbox */
+  /*#custom-filter-${$$scope.qId} .qv-inner-object {
+    padding: 0px !important;
+  }*/
   article:has(#custom-filter-${$$scope.qId} .active){
     z-index: 1020;
   }
