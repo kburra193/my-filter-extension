@@ -72,7 +72,7 @@ export default async function ($element, layout) {
       listObj.selectListObjectValues({
         qPath: "/qListObjectDef",
         qValues: [defaultvalue],
-        qToggleMode: true, // true for multi select
+        qToggleMode: false, // true for multi select
         //qSoftLock: true,
       });
     }
