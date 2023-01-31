@@ -376,78 +376,6 @@ export default {
               ],
               defaultValue: "normal",
             },
-            ListItemFontColor: {
-              label: "Font Color",
-              ref: "ListItemFontColorPicker",
-              component: "color-picker",
-              type: "object",
-              defaultValue: {
-                color: "#595959",
-              },
-              show: function (e) {
-                return e.ListItemFontColorPicker;
-              },
-            },
-            ListItemBgColor: {
-              label: "Background (Bg) Color",
-              ref: "ListItemBgColorPicker",
-              component: "color-picker",
-              type: "object",
-              defaultValue: {
-                color: "#FFF",
-              },
-              show: function (e) {
-                return e.ListItemBgColorPicker;
-              },
-            },
-            ListItemPossibleBgColor: {
-              label: "Possible Bg Color",
-              ref: "ListItemPossibleBgColorPicker",
-              component: "color-picker",
-              type: "object",
-              defaultValue: {
-                color: "#fff",
-              },
-              show: function (e) {
-                return e.ListItemPossibleBgColorPicker;
-              },
-            },
-            ListItemSelectedBgColor: {
-              label: "Selected Bg Color",
-              ref: "ListItemSelectedBgColorPicker",
-              component: "color-picker",
-              type: "object",
-              defaultValue: {
-                color: "#009845",
-              },
-              show: function (e) {
-                return e.ListItemSelectedBgColorPicker;
-              },
-            },
-            ListItemAlternateBgColor: {
-              label: "Alternate Bg Color",
-              ref: "ListItemAlternateBgColorPicker",
-              component: "color-picker",
-              type: "object",
-              defaultValue: {
-                color: "#ddd",
-              },
-              show: function (e) {
-                return e.ListItemAlternateBgColorPicker;
-              },
-            },
-            ListItemExcludedBgColor: {
-              label: "Excluded Bg Color",
-              ref: "ListItemExcludedBgColorPicker",
-              component: "color-picker",
-              type: "object",
-              defaultValue: {
-                color: "#a9a9a9",
-              },
-              show: function (e) {
-                return e.ListItemExcludedBgColorPicker;
-              },
-            },
             ListItemAlign: {
               ref: "ListItemAlign",
               expression: "optional",
@@ -708,35 +636,6 @@ export default {
               ],
               defaultValue: "normal",
             },
-            BtnFontColor: {
-              type: "boolean",
-              component: "switch",
-              label: "Font Color",
-              ref: "BtnFontColorSwitch",
-              options: [
-                {
-                  value: false,
-                  label: "Custom",
-                },
-                {
-                  value: true,
-                  label: "Auto",
-                },
-              ],
-              defaultValue: true,
-            },
-            BtnActiveColor: {
-              label: "Active Color",
-              ref: "BtnFontActiveColorPicker",
-              component: "color-picker",
-              type: "object",
-              defaultValue: {
-                color: "#000000",
-              },
-              show: function (e) {
-                return !e.BtnFontColorSwitch;
-              },
-            },
             BtnBorder: {
               type: "boolean",
               component: "switch",
@@ -878,6 +777,108 @@ export default {
             },
           },
         },
+        AdditionalColorSettings: {
+          type: "items",
+          label: "Color Settings",
+          items: {
+            PossibleBgColor: {
+              label: "Possible Bg Color",
+              ref: "PossibleBgColorPicker",
+              component: "color-picker",
+              type: "object",
+              defaultValue: {
+                color: "#fff",
+              },
+              show: function (e) {
+                return e.PossibleBgColorPicker;
+              },
+            },
+            PossibleFontColor: {
+              label: "Possible Font Color",
+              ref: "PossibleFontColorPicker",
+              component: "color-picker",
+              type: "object",
+              defaultValue: {
+                color: "#595959",
+              },
+              show: function (e) {
+                return e.PossibleFontColorPicker;
+              },
+            },
+            SelectedBgColor: {
+              label: "Selected Bg Color",
+              ref: "SelectedBgColorPicker",
+              component: "color-picker",
+              type: "object",
+              defaultValue: {
+                color: "#009845",
+              },
+              show: function (e) {
+                return e.SelectedBgColorPicker;
+              },
+            },
+            SelectedFontColor: {
+              label: "Selected Font Color",
+              ref: "SelectedFontColorPicker",
+              component: "color-picker",
+              type: "object",
+              defaultValue: {
+                color: "#fff",
+              },
+              show: function (e) {
+                return e.SelectedFontColorPicker;
+              },
+            },
+            AlternateBgColor: {
+              label: "Alternate Bg Color",
+              ref: "AlternateBgColorPicker",
+              component: "color-picker",
+              type: "object",
+              defaultValue: {
+                color: "#ddd",
+              },
+              show: function (e) {
+                return e.AlternateBgColorPicker;
+              },
+            },
+            AlternateFontColor: {
+              label: "Alternate Font Color",
+              ref: "AlternateFontColorPicker",
+              component: "color-picker",
+              type: "object",
+              defaultValue: {
+                color: "#595959",
+              },
+              show: function (e) {
+                return e.AlternateFontColorPicker;
+              },
+            },
+            ExcludedBgColor: {
+              label: "Excluded Bg Color",
+              ref: "ExcludedBgColorPicker",
+              component: "color-picker",
+              type: "object",
+              defaultValue: {
+                color: "#a9a9a9",
+              },
+              show: function (e) {
+                return e.ExcludedBgColorPicker;
+              },
+            },
+            ExcludedFontColor: {
+              label: "Excluded Font Color",
+              ref: "ExcludedFontColorPicker",
+              component: "color-picker",
+              type: "object",
+              defaultValue: {
+                color: "#fff",
+              },
+              show: function (e) {
+                return e.ExcludedFontColorPicker;
+              },
+            },
+          },
+        },
       },
     },
     InteractivitySettings: {
@@ -966,11 +967,11 @@ export default {
         },
         selectAlsoDefaults: {
           type: "string",
-          label: "Select also these as default, separate by ;",
+          label: "Select also these as default, separate by ,",
           ref: "selectAlsoThese",
           defaultValue: "",
           show: function (d) {
-            return d.selectMultipleYN;
+            return d.enableSelections && d.multiSelect && d.selectMultipleYN;
           },
           expression: "optional",
         },
