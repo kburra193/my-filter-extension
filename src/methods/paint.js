@@ -404,9 +404,6 @@ export default async function ($element, layout) {
   //3.FontStyle
   var ListItemFontStyle = layout.ListItemFontStyle;
   $$scope.ListItemFontStyle = ListItemFontStyle;
-  //4.FontColor Bg Color Selected/Possible/Alternate/Exclude
-  var ListItemFontColorPicker = layout.ListItemFontColorPicker;
-  $$scope.ListItemFontColorPicker = ListItemFontColorPicker;
   //5.Alignment
   var ListItemAlign = layout.ListItemAlign;
   $$scope.ListItemAlign = ListItemAlign;
@@ -428,8 +425,6 @@ export default async function ($element, layout) {
     "font-weight": layout.ListItemFontStyle == "bold" ? "bold" : "normal",
     "text-decoration":
       layout.ListItemFontStyle == "underline" ? "underline" : "none",
-    color: ListItemFontColorPicker.color,
-    // "background-color": layout.ListItemBgColorPicker.color,
     "text-align": ListItemAlign,
     "border-bottom-style": layout.ListItemBorderSwitch
       ? ListItemBorderType
@@ -453,7 +448,7 @@ export default async function ($element, layout) {
     height: DropdownHeight + "px",
     width: DropdownWidth + "%",
   };
-  //Btn Props
+   //Btn Props
   //1.FontSize, Height, Width , Spacing ,Grouped
   var BtnFontsize = layout.BtnFontsize;
   $$scope.BtnFontsize = BtnFontsize;
@@ -479,10 +474,6 @@ export default async function ($element, layout) {
   var BtnFontStyle = layout.BtnFontStyle;
   $$scope.BtnFontStyle = BtnFontStyle;
   //4.FontColor
-  var BtnFontColorSwitch = layout.BtnFontColorSwitch;
-  $$scope.BtnFontColorSwitch = BtnFontColorSwitch;
-  var BtnFontActiveColorPicker = layout.BtnFontActiveColorPicker;
-  $$scope.BtnFontActiveColorPicker = BtnFontActiveColorPicker;
   //5.Border
   var BtnBorderSwitch = layout.BtnBorderSwitch;
   $$scope.BtnBorderSwitch = BtnBorderSwitch;
@@ -518,9 +509,6 @@ export default async function ($element, layout) {
     "font-weight": layout.BtnFontStyle == "bold" ? "bold" : "normal",
     "text-decoration":
       layout.BtnFontStyle == "underline" ? "underline" : "none",
-    color: layout.BtnFontColorSwitch
-      ? "#000000"
-      : BtnFontActiveColorPicker.color,
     "border-top-style": layout.BtnBorderSwitch ? BtnBorderType : "none",
     "border-right-style": layout.BtnBorderSwitch ? BtnBorderType : "none",
     "border-bottom-style": layout.BtnBorderSwitch ? BtnBorderType : "none",
@@ -588,6 +576,25 @@ export default async function ($element, layout) {
   $$scope.enableUnlockField = {
     display: layout.enableUnlockField == true ? "onset" : "none",
   };
+
+ //Additional colors logic
+ var PossibleBgColorPicker = layout.PossibleBgColorPicker;
+ $$scope.PossibleBgColorPicker = PossibleBgColorPicker;
+ var PossibleFontColorPicker = layout.PossibleFontColorPicker;
+ $$scope.PossibleFontColorPicker = PossibleFontColorPicker;
+ var SelectedBgColorPicker = layout.SelectedBgColorPicker;
+ $$scope.SelectedBgColorPicker = SelectedBgColorPicker;
+ var SelectedFontColorPicker = layout.SelectedFontColorPicker;
+ $$scope.SelectedFontColorPicker = SelectedFontColorPicker;
+ var ExcludedBgColorPicker = layout.ExcludedBgColorPicker;
+ var AlternateBgColorPicker = layout.AlternateBgColorPicker;
+ $$scope.AlternateBgColorPicker = AlternateBgColorPicker;
+ var AlternateFontColorPicker = layout.AlternateFontColorPicker;
+ $$scope.AlternateFontColorPicker = AlternateFontColorPicker;
+ $$scope.ExcludedBgColorPicker = ExcludedBgColorPicker;
+ var ExcludedFontColorPicker = layout.ExcludedFontColorPicker;
+ $$scope.ExcludedFontColorPicker = ExcludedFontColorPicker;
+ 
   //Additional colors logic
   var sheet = $(`style#css${layout.qInfo.qId}`);
   if (sheet.length == 0) {
@@ -599,44 +606,44 @@ export default async function ($element, layout) {
   document.body.appendChild(sheet);
   sheet.innerHTML = `
   header#${$$scope.qId}_title { display: none; }
-  #custom-filter-${$$scope.qId} .listbox .list-item.A {
-    background-color: ${layout.ListItemAlternateBgColorPicker.color} !important;
-    color: #595959 !important;
-    border-bottom: 1px solid #fff !important;
-  }
   #custom-filter-${$$scope.qId} .listbox .list-item.O {
-    background-color: ${layout.ListItemPossibleBgColorPicker.color} !important;
-    color:  ${layout.ListItemFontColorPicker.color} !important;
-    border-bottom: 1px solid rgb(221, 221, 221) !important;
-  }
-  #custom-filter-${$$scope.qId} .listbox .list-item.X {
-    color: #fff !important;
-    background-color: ${layout.ListItemExcludedBgColorPicker.color} !important;
+    background-color: ${layout.PossibleBgColorPicker.color} !important;
+    color:  ${layout.PossibleFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .listbox .list-item.S {
-    background-color: ${layout.ListItemSelectedBgColorPicker.color} !important;
-    color: #fff !important;
+    background-color: ${layout.SelectedBgColorPicker.color} !important;
+    color: ${layout.SelectedFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
-  #custom-filter-${$$scope.qId} .button-item.A {
-    background-color: ${layout.ListItemAlternateBgColorPicker.color} !important;
-    color: #595959 !important;
+  #custom-filter-${$$scope.qId} .listbox .list-item.A {
+    background-color: ${layout.AlternateBgColorPicker.color} !important;
+    color: ${layout.AlternateFontColorPicker.color} !important;
     border-bottom: 1px solid #fff !important;
   }
-  #custom-filter-${$$scope.qId} .button-item.O {
-    background-color: ${layout.ListItemPossibleBgColorPicker.color} !important;
-    color: ${layout.BtnFontActiveColorPicker.color} !important;
+  #custom-filter-${$$scope.qId} .listbox .list-item.X {
+    background-color: ${layout.ExcludedBgColorPicker.color} !important;
+    color: ${layout.ExcludedFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
-  #custom-filter-${$$scope.qId} .button-item.X {
-    color: #fff !important;
-    background-color: ${layout.ListItemExcludedBgColorPicker.color} !important;
+  #custom-filter-${$$scope.qId} .button-item.O {
+    background-color: ${layout.PossibleBgColorPicker.color} !important;
+    color: ${layout.PossibleFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   #custom-filter-${$$scope.qId} .button-item.S {
-    background-color: ${layout.ListItemSelectedBgColorPicker.color} !important;
-    color: #fff !important;
+    background-color: ${layout.SelectedBgColorPicker.color} !important;
+    color: ${layout.SelectedFontColorPicker.color} !important;
+    border-bottom: 1px solid rgb(221, 221, 221) !important;
+  }
+  #custom-filter-${$$scope.qId} .button-item.A {
+    background-color: ${layout.AlternateBgColorPicker.color} !important;
+    color: ${layout.AlternateFontColorPicker.color} !important;
+    border-bottom: 1px solid #fff !important;
+  }
+  #custom-filter-${$$scope.qId} .button-item.X {
+    background-color: ${layout.ExcludedBgColorPicker.color} !important;
+    color: ${layout.ExcludedFontColorPicker.color} !important;
     border-bottom: 1px solid rgb(221, 221, 221) !important;
   }
   /* When the checkbox is checked, add a tick */
@@ -645,7 +652,7 @@ export default async function ($element, layout) {
   font-weight: 800;
   left: 3px;
   top: -1px;
-  color: ${layout.ListItemSelectedBgColorPicker.color} !important;
+  color: ${layout.SelectedBgColorPicker.color} !important;
   position: absolute;
   } 
   /* When the radiobutton is checked, add a tick */
@@ -656,7 +663,7 @@ export default async function ($element, layout) {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  color: ${layout.ListItemSelectedBgColorPicker.color} !important;
+  color: ${layout.SelectedBgColorPicker.color} !important;
   position: absolute;
   }
   /* to remove some padding listbox */
