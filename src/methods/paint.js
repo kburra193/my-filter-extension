@@ -32,6 +32,9 @@ export default async function ($element, layout) {
   $$scope.width = $element.width();
   $$scope.qId = layout.qInfo.qId;
   $$scope.dimensionsLabel = layout.qListObject.qDimensionInfo.qFallbackTitle;
+  $$scope.showLabel = layout.showFieldLabel;
+  $$scope.label = layout.fieldLabel;
+  $$scope.dataLength = layout.qListObject.qDataPages.length;
   $$scope.rows = layout.qListObject.qDataPages[0].qMatrix.flat();
   $$scope.listUiType = layout.SelectionUIType;
   var qTop = 0;
@@ -39,6 +42,29 @@ export default async function ($element, layout) {
 
   //Create Session Object for Selections and Search Functionality
   var listObj = self.backendApi.model;
+  async function getListData(listObj, qTop, qHeight) {
+    const result = await listObj.getListObjectData({
+      qPath: "/qListObjectDef",
+      qPages: [
+        {
+          qTop: qTop * qHeight,
+          qLeft: 0,
+          qHeight: qHeight,
+          qWidth: 2,
+        },
+      ],
+    });
+    return result[0].qMatrix;
+  }
+
+  //Load More Button display none when pages max reached
+  $$scope.displayMaxPage = "";
+  var qCardinal = layout.qListObject.qDimensionInfo.qCardinal;
+  if (qCardinal / qHeight - 1 < qTop) {
+    $$scope.displayMaxPage = "none";
+  } else {
+    $$scope.displayMaxPage = "block";
+  }
   //Paginate
   $$scope.paginateList = async function () {
     qTop = qTop + 1;
@@ -47,6 +73,13 @@ export default async function ($element, layout) {
     $$scope.rows = $$scope.rows.concat(pages.flat());
     // Issue: when applying selection (paint is firing) - the list shrinks back to original page
     // is it an issue or "as designed"?
+    //Load More Button display none when pages max reached
+    var qCardinal = layout.qListObject.qDimensionInfo.qCardinal;
+    if (qCardinal / qHeight - 1 < qTop) {
+      $$scope.displayMaxPage = "none";
+    } else {
+      $$scope.displayMaxPage = "block";
+    }
   };
   var enableSelections = layout.enableSelections;
   $$scope.enableSelections = enableSelections;
@@ -72,7 +105,7 @@ export default async function ($element, layout) {
       listObj.selectListObjectValues({
         qPath: "/qListObjectDef",
         qValues: [defaultvalue],
-        qToggleMode:false, // true for multi select
+        qToggleMode: false, // true for multi select
         //qSoftLock: true,
       });
     }
@@ -123,10 +156,11 @@ export default async function ($element, layout) {
       )[0];
       var currentItemState = currentItem.qState;
 
-      $$scope.showSelectionToolbar = true;
       if (!beginSelections) {
         beginSelections = true;
-        listObj.beginSelections({ qPaths: ["/qListObjectDef"] });
+        listObj.beginSelections({
+          qPaths: ["/qListObjectDef"],
+        });
       }
 
       if (currentStartDrgElNum == endElNum) {
@@ -140,7 +174,8 @@ export default async function ($element, layout) {
         console.log("current item", currentItem);
 
         if (multiSelect) {
-          // if it's already active or already in array, remove it
+          $$scope.showSelectionToolbar = true;
+          // if it's already active or already in array, remove it and change state to "O"
           if (currentItemState == "S" || occurance) {
             elNumbersToSelect = elNumbersToSelect.filter((v) => v !== endElNum);
             $$scope.rows.filter(
@@ -153,15 +188,15 @@ export default async function ($element, layout) {
             )[0].qState = "S";
           }
         } else {
+          $$scope.showSelectionToolbar = false;
           // single select - just clear all and apply new selection
           if (currentItemState == "S") {
             // if already selected, clear the array
-            console.log("huh?");
             endElNum = false;
           }
         }
 
-        console.log("selected array after click", elNumbersToSelect);
+        console.log("array to select", elNumbersToSelect);
 
         listObj
           .selectListObjectValues({
@@ -176,6 +211,7 @@ export default async function ($element, layout) {
             }
           });
       } else {
+        $$scope.showSelectionToolbar = true;
         // DRAG HANDLER
         if (multiSelect) {
           // user dragged accross multiple values and we allow drag
@@ -193,7 +229,27 @@ export default async function ($element, layout) {
             }
           }
 
-          console.log(elNumbersToSelect);
+          // remove the el numbers from array if they already have qState=S
+          elNumbersToSelect = elNumbersToSelect.filter((i) => {
+            var row = $$scope.rows.filter((row) => row.qElemNumber == i)[0]
+              .qState;
+            return (
+              $$scope.rows.filter((row) => row.qElemNumber == i)[0].qState !=
+              "S"
+            );
+          });
+
+          // apply qState=S to the rows that are going to be selected
+          $$scope.rows = $$scope.rows.map((row) => {
+            console.log(elNumbersToSelect.includes(row.qElemNumber));
+            return {
+              ...row,
+              qState: elNumbersToSelect.includes(row.qElemNumber)
+                ? "S"
+                : row.qState,
+            };
+          });
+          
 
           // applying selection to qlik, but selection might still continue
           listObj
@@ -205,7 +261,6 @@ export default async function ($element, layout) {
             })
             .then(function (r) {
               elNumbersToSelect = [];
-              $$scope.endSelections(true); // temporary, we need to add back the temp state to values and remove this line
             });
         } else {
           console.log(
@@ -214,26 +269,6 @@ export default async function ($element, layout) {
           elNumbersToSelect = [];
         }
       }
-
-      // this will move up to the drag handler. need to resolve temp qStates
-
-      // console.log('el', endElNum);
-      // // console.log('occurance', occurance);
-      // console.log("list of current drag", elNumbersToSelect);
-      // // console.log("temp active numbers", elNumbersToTempActivate);
-
-      // temporary applying selected style to values, while in selection state
-      // $$scope.rows = $$scope.rows.map((i) => {
-      //   return {
-      //     qText: i.qText,
-      //     qElemNumber: i.qElemNumber,
-      //     qFrequency: i.qFrequency,
-      //     qState: elNumbersToSelect.includes(i.qElemNumber) ? "S" : i.qState,
-      //     // qState: elNumbersToTempActivate.includes(i.qElemNumber) && i.qState == "S" ? "" : i.qState,
-      //     //selected: elNumbersToTempActivate.includes(i.qElemNumber) ? "selected" : "",
-      //   };
-
-      // });
     }
   };
 
@@ -241,7 +276,9 @@ export default async function ($element, layout) {
   $$scope.endSelections = function (approve) {
     console.log("approve selections?", approve);
     if (!approve) $$scope.selectionsMenuBar("clearAll");
-    listObj.abortListObjectSearch({ qPath: "/qListObjectDef" });
+    listObj.abortListObjectSearch({
+      qPath: "/qListObjectDef",
+    });
     listObj.endSelections({
       qAccept: approve,
     });
@@ -279,7 +316,6 @@ export default async function ($element, layout) {
     };
     return items[item]() || "not found";
   };
-
   //Search Functionality
   $$scope.searchFieldDataForString = async function (string) {
     var searchResults;
@@ -448,7 +484,7 @@ export default async function ($element, layout) {
     height: DropdownHeight + "px",
     width: DropdownWidth + "%",
   };
-   //Btn Props
+  //Btn Props
   //1.FontSize, Height, Width , Spacing ,Grouped
   var BtnFontsize = layout.BtnFontsize;
   $$scope.BtnFontsize = BtnFontsize;
@@ -577,24 +613,24 @@ export default async function ($element, layout) {
     display: layout.enableUnlockField == true ? "onset" : "none",
   };
 
- //Additional colors logic
- var PossibleBgColorPicker = layout.PossibleBgColorPicker;
- $$scope.PossibleBgColorPicker = PossibleBgColorPicker;
- var PossibleFontColorPicker = layout.PossibleFontColorPicker;
- $$scope.PossibleFontColorPicker = PossibleFontColorPicker;
- var SelectedBgColorPicker = layout.SelectedBgColorPicker;
- $$scope.SelectedBgColorPicker = SelectedBgColorPicker;
- var SelectedFontColorPicker = layout.SelectedFontColorPicker;
- $$scope.SelectedFontColorPicker = SelectedFontColorPicker;
- var ExcludedBgColorPicker = layout.ExcludedBgColorPicker;
- var AlternateBgColorPicker = layout.AlternateBgColorPicker;
- $$scope.AlternateBgColorPicker = AlternateBgColorPicker;
- var AlternateFontColorPicker = layout.AlternateFontColorPicker;
- $$scope.AlternateFontColorPicker = AlternateFontColorPicker;
- $$scope.ExcludedBgColorPicker = ExcludedBgColorPicker;
- var ExcludedFontColorPicker = layout.ExcludedFontColorPicker;
- $$scope.ExcludedFontColorPicker = ExcludedFontColorPicker;
- 
+  //Additional colors logic
+  var PossibleBgColorPicker = layout.PossibleBgColorPicker;
+  $$scope.PossibleBgColorPicker = PossibleBgColorPicker;
+  var PossibleFontColorPicker = layout.PossibleFontColorPicker;
+  $$scope.PossibleFontColorPicker = PossibleFontColorPicker;
+  var SelectedBgColorPicker = layout.SelectedBgColorPicker;
+  $$scope.SelectedBgColorPicker = SelectedBgColorPicker;
+  var SelectedFontColorPicker = layout.SelectedFontColorPicker;
+  $$scope.SelectedFontColorPicker = SelectedFontColorPicker;
+  var ExcludedBgColorPicker = layout.ExcludedBgColorPicker;
+  var AlternateBgColorPicker = layout.AlternateBgColorPicker;
+  $$scope.AlternateBgColorPicker = AlternateBgColorPicker;
+  var AlternateFontColorPicker = layout.AlternateFontColorPicker;
+  $$scope.AlternateFontColorPicker = AlternateFontColorPicker;
+  $$scope.ExcludedBgColorPicker = ExcludedBgColorPicker;
+  var ExcludedFontColorPicker = layout.ExcludedFontColorPicker;
+  $$scope.ExcludedFontColorPicker = ExcludedFontColorPicker;
+
   //Additional colors logic
   var sheet = $(`style#css${layout.qInfo.qId}`);
   if (sheet.length == 0) {
