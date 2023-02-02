@@ -8,8 +8,7 @@
    <div ng-if="showDropdown" class="dropdown-list">
       <!-- TOGGLE -->
       <button class="dropdown-toggle lui-button" ng-click="onDropdownToggleClick($event)" ng-style="dropdownStyle">
-      <span ng-if="showLabel == true" ng-style="HeaderStyle">{{ label }}</span>
-      <span ng-if="showLabel == false" ng-style="HeaderStyle">{{ dimensionsLabel }}</span>
+      <span  ng-style="HeaderStyle">{{ label ? label : dimensionsLabel }}</span>
       <span class="lui-button__caret  lui-caret buttoncaret" style="float: right;"></span>
       </button>
       <!-- DROPDOWN OPTIONS -->
@@ -85,8 +84,7 @@
          <span class="selectionsMenu" title="Show Selections menu" ng-style="enableSelectionsMenu"><span
             class="lui-icon lui-icon--menu" ng-click="toggleSelectionMenuItems()"></span></span>
          <span class="lui-icon--search  lui-icon search-icon" title="Search" ng-click="toggleSearchbar()"></span>
-         <span ng-if="showLabel == true">{{ label }}</span>
-         <span ng-if="showLabel == false">{{ dimensionsLabel }}</span>
+         <span>{{ label ? label : dimensionsLabel }}</span>
       </div>
       <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
          <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
@@ -138,8 +136,7 @@
       <div class="label-header" ng-style="HeaderStyle">
          <span class="selectionsMenu" title="Show Selections menu" ng-style="enableSelectionsMenu"><span
             class="lui-icon lui-icon--menu" ng-click="toggleSelectionMenuItems()"></span></span>
-         <span ng-if="showLabel == true">{{ label }}</span>
-         <span ng-if="showLabel == false">{{ dimensionsLabel }}</span>
+            <span>{{ label ? label : dimensionsLabel }}</span>
       </div>
       <div class="selectionsMenuItems" ng-show="IsVisibleSelectionsMenuItems" ng-style="enableSelectionsMenu">
          <span class="lui-icon lui-icon--select-all" ng-click="selectionsMenuBar('selectAll')" ng-style="enableSelectAll"></span>
