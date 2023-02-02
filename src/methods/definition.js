@@ -25,30 +25,11 @@ export default {
                   ref: "qListObjectDef.qDef.qFieldDefs.0",
                   label: "Field"
               },
-              showFieldLabel: {
-                  type: "boolean",
-                  component: "switch",
-                  ref: "showFieldLabel",
-                  label: "Show field label",
-                  defaultValue: false,
-                  options: [{
-                          value: false,
-                          label: "No",
-                      },
-                      {
-                          value: true,
-                          label: "Yes",
-                      },
-                  ],
-              },
               fieldLabel: {
                   type: "string",
                   expression: "optional",
                   ref: "fieldLabel",
                   label: "Label",
-                  show: function(data) {
-                      return data.showFieldLabel;
-                  },
               },
               frequency: {
                   type: "string",
