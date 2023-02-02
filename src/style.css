@@ -368,14 +368,3 @@
   float: left;
   height: 100%;
 }
-.state-count-bar .state.selected {
-  background: #009845;
-}
-.state-count-bar .state {
-  float: left;
-  height: 100%;
-}
-.state-count-bar .state.alternative {
-  background: #d2d2d2;
-}
-
