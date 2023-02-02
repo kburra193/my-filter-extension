@@ -24,7 +24,6 @@ export default async function ($element, layout) {
   $$scope.width = $element.width();
   $$scope.qId = layout.qInfo.qId;
   $$scope.dimensionsLabel = layout.qListObject.qDimensionInfo.qFallbackTitle;
-  $$scope.showLabel = layout.showFieldLabel;
   $$scope.label = layout.fieldLabel;
   $$scope.dataLength = layout.qListObject.qDataPages.length;
   $$scope.rows = layout.qListObject.qDataPages[0].qMatrix.flat();
