@@ -726,5 +726,12 @@ export default async function ($element, layout) {
     width: 16px;
     float: right;
   }
+  /*dynamically change colors for state bars */
+  .state-count-bar .state.selected {
+    background: ${layout.SelectedBgColorPicker.color} !important;
+  }
+  .state-count-bar .state.alternative {
+    background: ${layout.AlternateBgColorPicker.color} !important;
+  }
   `;
 }
