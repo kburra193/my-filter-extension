@@ -1,3 +1,6 @@
+.qv-object-qs-advanced-filter .qv-inner-object {
+  padding: 0px !important;
+}
 .chart-container {
   height: 100%;
 }
@@ -93,23 +96,18 @@
   height: inherit;
   box-shadow: none;
   box-sizing: border-box;
-  border: 1px solid #d9d9d9;
   border-radius: 4px;
   background-color: white;
+  display: flex;
+  flex-direction: column;
 }
 
-/* .listbox:hover {
-  overflow-y: scroll;
-} */
 .listboxprops {
-  position: absolute;
-  height: calc(100% - 32px);
   width: 100%;
   overflow-y: scroll;
 }
 
 .listboxprops #loadMore {
-  display: table;
   margin: 0 auto;
 }
 .paginate-button-item{
@@ -220,6 +218,9 @@
   height: 100%;
   width: 100%;
   overflow-y: scroll;
+}
+.buttongroupprops #loadMore {
+  margin: 10px auto;
 }
 .button-item {
   position: relative;
@@ -354,3 +355,27 @@
 .buttongroup::-webkit-scrollbar,.buttongroupprops::-webkit-scrollbar-thumb:vertical:active {
   background: #ccc;
 }
+/* State bar */
+.state-count-bar {
+  border-top-width: 1px;
+  flex: 0 0 auto;
+  height: 4px;
+  background: #a9a9a9;
+  border: 0 solid #ccc;
+  width: 100%;
+}
+.state-count-bar .state {
+  float: left;
+  height: 100%;
+}
+.state-count-bar .state.selected {
+  background: #009845;
+}
+.state-count-bar .state {
+  float: left;
+  height: 100%;
+}
+.state-count-bar .state.alternative {
+  background: #d2d2d2;
+}
+
