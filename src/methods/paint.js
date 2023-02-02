@@ -10,14 +10,6 @@ Array.prototype.getUnique = function () {
   return uniques;
 };
 
-function removeDuplicates(arr) {
-  return arr.filter((item, index) => arr.indexOf(item) === index);
-}
-
-function checkIfArrayIsUnique(myArray) {
-  return myArray.length === new Set(myArray).size;
-}
-
 function getOccurence(array, value) {
   var count = 0;
   array.forEach((v) => v === value && count++);
@@ -30,6 +22,7 @@ export default async function ($element, layout) {
   $$scope.mode = qlik.navigation.getMode();
   $$scope.height = $element.height();
   $$scope.width = $element.width();
+  console.log(layout);
   $$scope.qId = layout.qInfo.qId;
   $$scope.dimensionsLabel = layout.qListObject.qDimensionInfo.qFallbackTitle;
   $$scope.showLabel = layout.showFieldLabel;
@@ -358,19 +351,16 @@ export default async function ($element, layout) {
   }
 
   // To get the state count and logic for selected count state bar
-  app.getList("SelectionObject", function (reply) {
-    //Setting Starting variable
-    var selectionsObject = reply.qSelectionObject.qSelections;
-    var initialValue = 0;
-    var totalSelections = selectionsObject.reduce(function (acc, cur) {
-      return acc + cur.qSelectedCount;
-    }, initialValue);
-    $$scope.totalSelections = totalSelections;
-    var percentSelected = (totalSelections/qCardinal)*100;
-    $$scope.percentSelected = percentSelected;
-    var percentAlternative = 100 - percentSelected;
-    $$scope.percentAlternative = percentAlternative;
-  });
+  var qselectedCount = layout.qListObject.qDimensionInfo.qStateCounts.qSelected;
+  console.log("selectedCount",qselectedCount);
+  var qAlternativeCount = layout.qListObject.qDimensionInfo.qStateCounts.qAlternative;
+  console.log("AlternativeCount",qAlternativeCount);
+  var percentSelected = (qselectedCount/qCardinal)*100;
+  $$scope.percentSelected = percentSelected;
+  console.log("percentSelected",percentSelected);
+  var percentAlternative = 100 - percentSelected;
+  $$scope.percentAlternative = percentAlternative;
+  console.log("percentAlternative",percentAlternative);
 
   // To switch between listbox, dropdown and buttongroup
   $$scope.ui = layout.ui;
