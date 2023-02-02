@@ -55,8 +55,8 @@
             </div>
             <div class="list-item"
                ng-class="[row.qState, listUiType , (listUiType == 'luicheckbox' || listUiType == 'luiradio') ? 'pushText' : '']"
-               ng-mousedown="startDrag(row.qElemNumber);"
-               ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="CellStyle">
+               ng-mousedown="startDrag(row.qElemNumber,$event)"
+               ng-mouseup="endDrag(row.qElemNumber,$event)" ng-repeat="row in rows" ng-style="CellStyle">
                <span ng-if="listUiType == 'luicheckbox'" class="checkbox"></span>
                <span ng-if="listUiType == 'luiradio'" class="radiobtn"></span>
                <span class="list-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
@@ -66,6 +66,10 @@
             <button ng-hide="IsVisibleSearch || IsVisibleSelectionsMenuItems" type="button" class="lui-button" id="loadMore" ng-click="paginateList()" ng-style="{'display': displayMaxPage}">Load
             more</button>
          </div>
+      </div>
+      <div class="state-count-bar" tid="stateCount">
+         <div class="state selected" ng-style="{'width': percentSelected + '%'}"></div>
+         <div class="state alternative" ng-style="{'width':  percentAlternative + '%'}"></div>
       </div>
    </div>
    <!--------------------------------------------UI Listbox--------------------------------------------------------------->
@@ -110,8 +114,8 @@
          </div>
          <div class="list-item"
             ng-class="[row.qState, listUiType , (listUiType == 'luicheckbox' || listUiType == 'luiradio') ? 'pushText' : '']"
-            ng-mousedown="startDrag(row.qElemNumber);"
-            ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="CellStyle">
+            ng-mousedown="[startDrag(row.qElemNumber,$event)]"
+            ng-mouseup="endDrag(row.qElemNumber,$event)" ng-repeat="row in rows" ng-style="CellStyle">
             <span ng-if="listUiType == 'luicheckbox'" class="checkbox"></span>
             <span ng-if="listUiType == 'luiradio'" class="radiobtn"></span>
             <span class="list-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
@@ -154,11 +158,13 @@
          <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
       </div>
       <div class="buttongroupprops">
-         <button class="button-item" ng-class="[row.qState]" ng-mousedown="startDrag(row.qElemNumber);"
-            ng-mouseup="endDrag(row.qElemNumber)" ng-repeat="row in rows" ng-style="BtnGroupStyle">
+         <button class="button-item" ng-class="[row.qState]" ng-mousedown="startDrag(row.qElemNumber,$event);"
+            ng-mouseup="endDrag(row.qElemNumber,$event)" ng-repeat="row in rows" ng-style="BtnGroupStyle">
          <span class="button-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
          <span class="button-item-frequency">{{ row.qFrequency }}</span>
          </button>
+         <button ng-hide="IsVisibleSearch || IsVisibleSelectionsMenuItems" type="button" class="lui-button" id="loadMore" ng-click="paginateList()" ng-style="{'display': displayMaxPage}">Load
+            more</button>
       </div>
    </div>
 </div>
