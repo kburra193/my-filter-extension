@@ -484,10 +484,14 @@ export default async function ($element, layout) {
   //2.Width
   var DropdownWidth = layout.DropdownWidth;
   $$scope.DropdownWidth = DropdownWidth;
+  //3.Background Color
+  var DropdownBgColorPicker = layout.DropdownBgColorPicker;
+  $$scope.DropdownBgColorPicker = DropdownBgColorPicker;
   ////Final Adding these to the layout
   $$scope.dropdownStyle = {
     height: DropdownHeight + "px",
     width: DropdownWidth + "%",
+    background: DropdownBgColorPicker.color
   };
   //Btn Props
   //1.FontSize, Height, Width , Spacing ,Grouped
