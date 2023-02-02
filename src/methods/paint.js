@@ -22,7 +22,6 @@ export default async function ($element, layout) {
   $$scope.mode = qlik.navigation.getMode();
   $$scope.height = $element.height();
   $$scope.width = $element.width();
-  console.log(layout);
   $$scope.qId = layout.qInfo.qId;
   $$scope.dimensionsLabel = layout.qListObject.qDimensionInfo.qFallbackTitle;
   $$scope.showLabel = layout.showFieldLabel;
@@ -352,15 +351,10 @@ export default async function ($element, layout) {
 
   // To get the state count and logic for selected count state bar
   var qselectedCount = layout.qListObject.qDimensionInfo.qStateCounts.qSelected;
-  console.log("selectedCount",qselectedCount);
-  var qAlternativeCount = layout.qListObject.qDimensionInfo.qStateCounts.qAlternative;
-  console.log("AlternativeCount",qAlternativeCount);
-  var percentSelected = (qselectedCount/qCardinal)*100;
+  var percentSelected = (qselectedCount / qCardinal) * 100;
   $$scope.percentSelected = percentSelected;
-  console.log("percentSelected",percentSelected);
   var percentAlternative = 100 - percentSelected;
   $$scope.percentAlternative = percentAlternative;
-  console.log("percentAlternative",percentAlternative);
 
   // To switch between listbox, dropdown and buttongroup
   $$scope.ui = layout.ui;
