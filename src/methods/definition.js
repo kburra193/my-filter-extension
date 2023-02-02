@@ -522,6 +522,18 @@ export default {
                               return e.DropdownWidth;
                           },
                       },
+                      DropdownBackgroundColor: {
+                        label: "Background Color",
+                        ref: "DropdownBgColorPicker",
+                        component: "color-picker",
+                        type: "object",
+                        defaultValue: {
+                            color: "#fff",
+                        },
+                        show: function(e) {
+                            return e.DropdownBgColorPicker;
+                        },
+                    },
                   },
               },
               ButtonGroupSettings: {
