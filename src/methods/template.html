@@ -54,8 +54,9 @@
             </div>
             <div class="list-item"
                ng-class="[row.qState, listUiType , (listUiType == 'luicheckbox' || listUiType == 'luiradio') ? 'pushText' : '']"
-               ng-mousedown="startDrag(row.qElemNumber,$event)"
-               ng-mouseup="endDrag(row.qElemNumber,$event)" ng-repeat="row in rows" ng-style="CellStyle">
+               ng-mousedown="startDrag(row, $event)"
+               ng-mouseover="hoverHandler(row, $event)"
+               ng-mouseup="endDrag(row, $event)" ng-repeat="row in rows" ng-style="CellStyle">
                <span ng-if="listUiType == 'luicheckbox'" class="checkbox"></span>
                <span ng-if="listUiType == 'luiradio'" class="radiobtn"></span>
                <span class="list-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
@@ -112,8 +113,9 @@
          </div>
          <div class="list-item"
             ng-class="[row.qState, listUiType , (listUiType == 'luicheckbox' || listUiType == 'luiradio') ? 'pushText' : '']"
-            ng-mousedown="[startDrag(row.qElemNumber,$event)]"
-            ng-mouseup="endDrag(row.qElemNumber,$event)" ng-repeat="row in rows" ng-style="CellStyle">
+            ng-mousedown="startDrag(row, $event)"
+            ng-mouseover="hoverHandler(row, $event)"
+            ng-mouseup="endDrag(row, $event)" ng-repeat="row in rows" ng-style="CellStyle">
             <span ng-if="listUiType == 'luicheckbox'" class="checkbox"></span>
             <span ng-if="listUiType == 'luiradio'" class="radiobtn"></span>
             <span class="list-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
@@ -155,8 +157,10 @@
          <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
       </div>
       <div class="buttongroupprops">
-         <button class="button-item" ng-class="[row.qState]" ng-mousedown="startDrag(row.qElemNumber,$event);"
-            ng-mouseup="endDrag(row.qElemNumber,$event)" ng-repeat="row in rows" ng-style="BtnGroupStyle">
+         <button class="button-item" ng-class="[row.qState]"
+               ng-mousedown="startDrag(row, $event)"
+               ng-mouseover="hoverHandler(row, $event)"
+               ng-mouseup="endDrag(row, $event)" ng-repeat="row in rows" ng-style="BtnGroupStyle">
          <span class="button-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
          <span class="button-item-frequency">{{ row.qFrequency }}</span>
          </button>
