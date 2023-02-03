@@ -1,14 +1,5 @@
 var qlik = window.require("qlik");
 var app = qlik.currApp();
-Array.prototype.getUnique = function () {
-  var uniques = [];
-  for (var i = 0, l = this.length; i < l; ++i) {
-    if (this.lastIndexOf(this[i]) == this.indexOf(this[i])) {
-      uniques.push(this[i]);
-    }
-  }
-  return uniques;
-};
 
 function getOccurence(array, value) {
   var count = 0;
@@ -667,21 +658,14 @@ export default async function ($element, layout) {
   .listboxprops .list-item.S .checkbox::before {
   content: "✔";
   font-weight: 800;
-  left: 3px;
   top: -1px;
+  left: 3px;
   color: ${layout.SelectedBgColorPicker.color} !important;
   position: absolute;
   } 
   /* When the radiobutton is checked, add a tick */
   .listboxprops .list-item.S .radiobtn::before {
-  font-weight: 800;
-  top: -1.5px;
-  left: 2.5px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
   color: ${layout.SelectedBgColorPicker.color} !important;
-  position: absolute;
   }
   /* to remove some padding listbox */
   /*#custom-filter-${$$scope.qId} .qv-inner-object {
