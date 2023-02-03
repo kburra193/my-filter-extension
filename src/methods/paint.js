@@ -133,71 +133,100 @@ export default async function ($element, layout) {
     }
   }
 
+  var dragging = false;
+  var beginSelections = false;
+  var startEl;
+  var startElNum, endElNum;
   var elNumbersToSelect = [];
-  //Logic for Drag Select
-  var currentStartDrgElNum;
-  $$scope.startDrag = function (elNum, event) {
-    if (event.which !== 3) {
-      currentStartDrgElNum = elNum;
+
+  $$scope.startDrag = function (el, event) {
+    if (event.which !== 3 && enableSelections && $$scope.mode == "analysis") {
+      startEl = el;
+      startElNum = el.qElemNumber;
+      dragging = true;
+      // console.log("start with " + el.qText);
     }
   };
-  var beginSelections = false;
-  $$scope.endDrag = function (endElNum, event) {
-    if (event.which !== 3) {
-      if (enableSelections && $$scope.mode == "analysis") {
-        var currentItem = $$scope.rows.filter(
-          (row) => row.qElemNumber == endElNum
-        )[0];
-        var currentItemState = currentItem.qState;
 
+  $$scope.hoverHandler = function (el, event) {
+    if (!dragging || !enableSelections || $$scope.mode != "analysis" || !multiSelect) return;
+    // console.log("dragging over " + el.qText);
+    // only apply selection if item is not already selected
+    if (startEl.qState != "S") { // apply selection to start element if not already selected
+      listObj
+          .selectListObjectValues({
+            qPath: "/qListObjectDef",
+            qValues: [startEl.qElemNumber],
+            qToggleMode: multiSelect, // true for multi select
+            //qSoftLock: true,
+          });
+      $$scope.rows.filter((row) => row.qElemNumber == startEl.qElemNumber)[0].qState = "S";
+    }
+
+    if (el.qState != "S") { // apply selection to hovered element
+      listObj
+          .selectListObjectValues({
+            qPath: "/qListObjectDef",
+            qValues: [el.qElemNumber],
+            qToggleMode: multiSelect, // true for multi select
+            //qSoftLock: true,
+          });
+      $$scope.rows.filter((row) => row.qElemNumber == el.qElemNumber)[0].qState = "S";
+    }
+    
+  };
+
+  $$scope.endDrag = function (el, event) {
+    if (event.which !== 3) {
+      dragging = false;
+      endElNum = el.qElemNumber;
+      var endElState = el.qState;
+      if (enableSelections && $$scope.mode == "analysis") {
         if (!beginSelections) {
+          // console.log("beginSelections");
+          $$scope.showSelectionToolbar = true;
           beginSelections = true;
           listObj.beginSelections({
             qPaths: ["/qListObjectDef"],
           });
         }
-
-        if (currentStartDrgElNum == endElNum) {
-          // CLICK HANDLER
-          console.log("click event");
-          var occurance = getOccurence(elNumbersToSelect, endElNum); // return number of occurnaces of item
-          var currentItem = $$scope.rows.filter(
-            (row) => row.qElemNumber == endElNum
-          );
-
-          console.log("current item", currentItem);
-
+        if (startElNum == endElNum) { // CLICK HANDLER
+          // console.log("click event");
+          var occurance = getOccurence(elNumbersToSelect, endElNum); // return number of occurnaces of item in array
+         
           if (multiSelect) {
             $$scope.showSelectionToolbar = true;
-            // if it's already active or already in array, remove it and change state to "O"
-            if (currentItemState == "S" || occurance) {
+            // if it's already active or already in array, remove it
+            if (endElState == "S" || occurance) {
               elNumbersToSelect = elNumbersToSelect.filter(
                 (v) => v !== endElNum
               );
+              // and change state to "O"
               $$scope.rows.filter(
                 (row) => row.qElemNumber == endElNum
               )[0].qState = "O";
             } else {
+              // if it's not active, add it to array
               elNumbersToSelect.push(endElNum);
+              // and change state to "S"
               $$scope.rows.filter(
                 (row) => row.qElemNumber == endElNum
               )[0].qState = "S";
             }
-          } else {
+          } else { // single select - clear all and apply new selection
             $$scope.showSelectionToolbar = false;
-            // single select - just clear all and apply new selection
-            if (currentItemState == "S") {
+            if (endElState == "S") {
               // if already selected, clear the array
               endElNum = false;
             }
           }
 
-          console.log("array to select", elNumbersToSelect);
+          // console.log("array to select", elNumbersToSelect);
 
           listObj
             .selectListObjectValues({
               qPath: "/qListObjectDef",
-              qValues: endElNum === false ? [] : [endElNum],
+              qValues: el.qElemNumber === false ? [] : [el.qElemNumber],
               qToggleMode: multiSelect, // true for multi select
               //qSoftLock: true,
             })
@@ -206,64 +235,8 @@ export default async function ($element, layout) {
                 $$scope.endSelections(true);
               }
             });
-        } else {
-          $$scope.showSelectionToolbar = true;
-          // DRAG HANDLER
-          if (multiSelect) {
-            // user dragged accross multiple values and we allow drag
-            console.log("drag event");
-            // logic for finding the set of items to select
-            if (currentStartDrgElNum < endElNum) {
-              // when we dragged down
-              for (var i = currentStartDrgElNum; i <= endElNum; i++) {
-                elNumbersToSelect.push(i);
-              }
-            } else if (currentStartDrgElNum > endElNum) {
-              for (var i = currentStartDrgElNum; i >= endElNum; i--) {
-                // dragged up
-                elNumbersToSelect.push(i);
-              }
-            }
-
-            // remove the el numbers from array if they already have qState=S
-            elNumbersToSelect = elNumbersToSelect.filter((i) => {
-              var row = $$scope.rows.filter((row) => row.qElemNumber == i)[0]
-                .qState;
-              console.log(row);
-              return (
-                $$scope.rows.filter((row) => row.qElemNumber == i)[0].qState !=
-                "S"
-              );
-            });
-
-            // apply qState=S to the rows that are going to be selected
-            $$scope.rows = $$scope.rows.map((row) => {
-              console.log(elNumbersToSelect.includes(row.qElemNumber));
-              return {
-                ...row,
-                qState: elNumbersToSelect.includes(row.qElemNumber)
-                  ? "S"
-                  : row.qState,
-              };
-            });
-
-            // applying selection to qlik, but selection might still continue
-            listObj
-              .selectListObjectValues({
-                qPath: "/qListObjectDef",
-                qValues: elNumbersToSelect,
-                qToggleMode: true,
-                //qSoftLock: true,
-              })
-              .then(function (r) {
-                elNumbersToSelect = [];
-              });
-          } else {
-            console.log(
-              "drag is not allowed in single select mode, dont do anything"
-            );
-            elNumbersToSelect = [];
-          }
+        } else { // DRAG HANDLER
+          // console.log("drag event ended");
         }
       }
     }
@@ -271,7 +244,7 @@ export default async function ($element, layout) {
 
   // approve selection
   $$scope.endSelections = function (approve) {
-    console.log("approve selections?", approve);
+    // console.log("approve selections?", approve);
     if (!approve) $$scope.selectionsMenuBar("clearAll");
     listObj.abortListObjectSearch({
       qPath: "/qListObjectDef",
