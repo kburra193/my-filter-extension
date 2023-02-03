@@ -730,10 +730,10 @@ export default async function ($element, layout) {
     float: right;
   }
   /*dynamically change colors for state bars */
-  .state-count-bar .state.selected {
+  #custom-filter-${$$scope.qId} .state-count-bar .state.selected {
     background: ${layout.SelectedBgColorPicker.color} !important;
   }
-  .state-count-bar .state.alternative {
+  #custom-filter-${$$scope.qId} .state-count-bar .state.alternative {
     background: ${layout.AlternateBgColorPicker.color} !important;
   }
   `;
