@@ -667,10 +667,6 @@ export default async function ($element, layout) {
   .listboxprops .list-item.S .radiobtn::before {
   color: ${layout.SelectedBgColorPicker.color} !important;
   }
-  /* to remove some padding listbox */
-  /*#custom-filter-${$$scope.qId} .qv-inner-object {
-    padding: 0px !important;
-  }*/
   article:has(#custom-filter-${$$scope.qId} .active){
     z-index: 1020;
   }
@@ -686,12 +682,22 @@ export default async function ($element, layout) {
     width: 16px;
     float: right;
   }
-  /*dynamically change colors for state bars */
+  /* dynamically change colors for state bars */
   #custom-filter-${$$scope.qId} .state-count-bar .state.selected {
     background: ${layout.SelectedBgColorPicker.color} !important;
   }
   #custom-filter-${$$scope.qId} .state-count-bar .state.alternative {
     background: ${layout.AlternateBgColorPicker.color} !important;
+  }
+  /* For icons on hover to remove */
+  .object-wrapper:has([aria-labelledby="${$$scope.qId}_type ${$$scope.qId}_title ${$$scope.qId}_noTitle ${$$scope.qId}_content"]) .qv-object-nav
+  {
+    display: none !important;
+  }
+  /* When you are in sense other theme modes, to hide the border we use this logic and for background to hide we have code on css styels. This is for dropdown mainly*/
+  .object-wrapper:has([aria-labelledby="${$$scope.qId}_type ${$$scope.qId}_title ${$$scope.qId}_noTitle ${$$scope.qId}_content"]) .qv-object
+  {
+    border: 0 !important;
   }
   `;
 }
