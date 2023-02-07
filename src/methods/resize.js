@@ -27,7 +27,6 @@ export default function ($element, layout) {
     }
     else {
       if ($(".dropdown-list .listbox.active").length > 0) {
-        console.log("edit mode popover is open");
         if ($(".dropdown-list .listbox").hasClass("active")) {
           $(".dropdown-list .listbox.active").removeClass("active");
         }
@@ -65,7 +64,6 @@ export default function ($element, layout) {
       }
     } else {
       if ($(".dropdown-list .listbox.active").length > 0) {
-        console.log("edit mode popover is open");
         if ($(".dropdown-list .listbox").hasClass("active")) {
           $(".dropdown-list .listbox.active").removeClass("active");
         }
