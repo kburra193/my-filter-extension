@@ -7,7 +7,7 @@ export default function ($element, layout) {
   $$scope.height = $element.height();
   $$scope.width = $element.width();
   $$scope.mode = qlik.navigation.getMode();
-  var maxListHeight = 85;
+  var maxListHeight = 89;
 
   if ($$scope.ui == "listbox") {
     if ($$scope.mode !== "edit") {
@@ -26,6 +26,12 @@ export default function ($element, layout) {
       }
     }
     else {
+      if ($(".dropdown-list .listbox.active").length > 0) {
+        console.log("edit mode popover is open");
+        if ($(".dropdown-list .listbox").hasClass("active")) {
+          $(".dropdown-list .listbox.active").removeClass("active");
+        }
+      }
       if ($(".listbox-selection-toolbar").length > 0) {
         $(".listbox-selection-toolbar").css({display : 'none'});
       }
@@ -59,6 +65,7 @@ export default function ($element, layout) {
       }
     } else {
       if ($(".dropdown-list .listbox.active").length > 0) {
+        console.log("edit mode popover is open");
         if ($(".dropdown-list .listbox").hasClass("active")) {
           $(".dropdown-list .listbox.active").removeClass("active");
         }
