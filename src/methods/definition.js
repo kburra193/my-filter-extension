@@ -1081,21 +1081,17 @@ export default {
       dataHandling: {
           uses: 'dataHandling'
       },
-      abouttxt: {
-          label: "About",
-          type: "items",
-          items: {
-              abouttxt2: {
-                  label: "About",
-                  type: "items",
-                  items: {
-                      aboutt: {
-                          component: "text",
-                          label: "Add some content",
-                      },
-                  },
-              },
-          },
+      about: {
+        label: "About",
+        component: "items",
+        items: {
+          header: { label: "Advanced Filter", style: "header", component: "text" },
+          paragraph1: {
+            label:
+              "A filter object that allows a user to make selections in a field.",
+            component: "text",
+          }
+        },
       },
   },
 };
