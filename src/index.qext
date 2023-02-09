@@ -1,7 +1,7 @@
 {
 	"name": "KB Advanced Filter",
 	"description": "Listbox visualization template",
-	"icon": "list",
+	"icon": "filter",
 	"type": "visualization",
 	"version": "1.0.0",
 	"author": "KB",
