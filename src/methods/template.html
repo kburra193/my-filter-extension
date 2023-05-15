@@ -8,11 +8,12 @@
    <div ng-if="showDropdown" class="dropdown-list">
       <!-- TOGGLE -->
       <button class="dropdown-toggle lui-button" ng-click="onDropdownToggleClick($event)" ng-style="dropdownStyle">
-      <span  ng-style="HeaderStyle">{{ label ? label : dimensionsLabel }}</span>
-      <span class="lui-button__caret  lui-caret buttoncaret" style="float: right;"></span>
+         <span  ng-style="HeaderStyle">{{ label ? label : dimensionsLabel }}</span>
+         <span class="lui-button__caret  lui-caret buttoncaret" style="float: right;"></span>
       </button>
       <!-- DROPDOWN OPTIONS -->
       <div class="listbox lui-popover">
+         <div class="lui-popover__arrow ng-scope lui-popover__arrow--top"></div>
          <div class="dropdown-listbox-selection-toolbar">
             <div class="iconsMenu">
                <span  title="Show Selections menu" ng-style="enableSelectionsMenu"><span
@@ -157,10 +158,8 @@
          <span  ng-click="selectionsMenuBar('unlockField')" ng-style="enableUnlockField">Unlock Field</span>
       </div>
       <div class="buttongroupprops">
-         <button class="button-item" ng-class="[row.qState]"
-               ng-mousedown="startDrag(row, $event)"
-               ng-mouseover="hoverHandler(row, $event)"
-               ng-mouseup="endDrag(row, $event)" ng-repeat="row in rows" ng-style="BtnGroupStyle">
+         <button class="button-item" ng-class="[row.qState]" ng-mousedown="startDrag(row, $event)"  ng-mouseover="hoverHandler(row, $event)"
+            ng-mouseup="endDrag(row, $event)" ng-repeat="row in rows" ng-style="BtnGroupStyle">
          <span class="button-item-value" ng-bind-html="highlight(row.qText, searchValue)"></span>
          <span class="button-item-frequency">{{ row.qFrequency }}</span>
          </button>
