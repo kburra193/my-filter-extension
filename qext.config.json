@@ -7,11 +7,11 @@
     "static": "./static"
   },
   "serverDeploy": {
-    "host": "qmi-qs-85eb",
+    "host": "qmi-qs-d058",
     "prefix": "hdr",
     "isSecure": true,
     "allowSelfSignedSignature": true,
     "hdrAuthHeaderName": "hdr-usr",
-    "hdrAuthUser": "QMI-QS-85EB\\qmi"
+    "hdrAuthUser": "QMI-QS-D058\\qmi"
   }
 }

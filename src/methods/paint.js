@@ -8,277 +8,311 @@ function getOccurence(array, value) {
 }
 
 export default async function ($element, layout) {
-  var self = this;
   const $$scope = this.$scope;
   $$scope.mode = qlik.navigation.getMode();
   $$scope.height = $element.height();
   $$scope.width = $element.width();
   $$scope.qId = layout.qInfo.qId;
-  $$scope.dimensionsLabel = layout.qListObject.qDimensionInfo.qFallbackTitle;
-  $$scope.label = layout.fieldLabel;
-  $$scope.dataLength = layout.qListObject.qDataPages.length;
-  $$scope.rows = layout.qListObject.qDataPages[0].qMatrix.flat();
   $$scope.listUiType = layout.SelectionUIType;
-  var qTop = 0;
-  var qHeight = 200;
+  console.log("paint_layout_lists", layout.lists);
+  $$scope.dataLength =
+    typeof layout.lists[0] !== "undefined"
+      ? layout.lists[0].qListObject.qDataPages.length
+      : 0;
+  $$scope.dimData = [];
 
-  //Create Session Object for Selections and Search Functionality
-  var listObj = self.backendApi.model;
-  async function getListData(listObj, qTop, qHeight) {
+  //Change to dropdown UI when height < 89
+  $$scope.maxListHeight = 89;
+  $$scope.checkHeight = $$scope.height < $$scope.maxListHeight;
+
+  // Map field data
+  layout.lists.forEach(async (field, i) => {
+    if (field.qListObject.qDataPages.length > 0) {
+      // check if field is already stored in dimDataStore
+      // if not, then  create a list object and qTop and store it in dimDataStore
+      const storedField = $$scope.dimDataStore.filter(
+        (f) => f.name == field.qListObject.qDimensionInfo.qFallbackTitle
+      )[0];
+
+      $$scope.dimData[i] = {
+        id: layout.qInfo.qId + "-" + field.cId,
+        fieldType: field.ui,
+        selectionType: field.SelectionUIType,
+        label: field.fieldLabel,
+        name: field.qListObject.qDimensionInfo.qFallbackTitle,
+        qTop: 0,
+        qHeight: 200,
+        listObj: storedField
+          ? storedField.listObj
+          : await app.createList({
+              // only create if field does not stored in dimDataStore
+              qDef: {
+                qFieldDefs: [field.qListObject.qDimensionInfo.qFallbackTitle],
+              },
+              qShowAlternatives: true, // This will make alternatives show up as 'A' instead of 'X'
+              qAutoSortByState: {
+                qDisplayNumberOfRows: 1,
+              },
+              qInitialDataFetch: [
+                {
+                  qTop: 0,
+                  qHeight: 1,
+                  qLeft: 0,
+                  qWidth: 1,
+                },
+              ],
+            }),
+        multiSelect: field.multiSelectionEnabled, //add to props and get from the layout object
+        qCardinal: field.qListObject.qDimensionInfo.qCardinal,
+        displayLoadMore:
+          field.qListObject.qDimensionInfo.qCardinal > 200 ? "block" : "none",
+        qselectedCount: field.qListObject.qDimensionInfo.qStateCounts.qSelected,
+        percentSelected:
+          (field.qListObject.qDimensionInfo.qStateCounts.qSelected /
+            field.qListObject.qDimensionInfo.qCardinal) *
+          100,
+        percentAlternative:
+          100 -
+          (field.qListObject.qDimensionInfo.qStateCounts.qSelected /
+            field.qListObject.qDimensionInfo.qCardinal) *
+            100,
+        values: field.qListObject.qDataPages[0].qMatrix.map((value) => {
+          return {
+            qText: value[0].qText,
+            qNum: value[0].qNum,
+            qElemNumber: value[0].qElemNumber,
+            qState: value[0].qState,
+          };
+        }),
+      };
+      console.log("dimData", $$scope.dimData);
+      // store the field in the dimDataStore
+      if (!storedField) {
+        $$scope.dimDataStore.push({
+          name: field.qListObject.qDimensionInfo.qFallbackTitle,
+          qTop: 0,
+          listObj: $$scope.dimData.filter(
+            (f) => f.name == field.qListObject.qDimensionInfo.qFallbackTitle
+          )[0].listObj,
+        });
+      }
+
+      // remove "floating" popover from previous render
+      $("#popover-" + layout.qInfo.qId + "-" + field.cId).remove();
+    }
+  });
+
+  async function getListData(listObj, page, qHeight) {
     const result = await listObj.getListObjectData({
       qPath: "/qListObjectDef",
       qPages: [
         {
-          qTop: qTop * qHeight,
+          qTop: page * qHeight,
           qLeft: 0,
           qHeight: qHeight,
-          qWidth: 2,
+          qWidth: 1,
         },
       ],
     });
     return result[0].qMatrix;
   }
+  //Pagination
+  $$scope.paginateList = async function (fieldName) {
+    // find dimension data
+    var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
+    var listObj = myDim.listObj;
+    var qCardinal = myDim.qCardinal;
+    var qHeight = myDim.qHeight;
+    // update qTop
+    myDim.qTop = myDim.qTop + 1;
+    var page = myDim.qTop;
 
-  //Load More Button display none when pages max reached
-  $$scope.displayMaxPage = "";
-  var qCardinal = layout.qListObject.qDimensionInfo.qCardinal;
-  if (qCardinal / qHeight - 1 < qTop) {
-    $$scope.displayMaxPage = "none";
-  } else {
-    $$scope.displayMaxPage = "block";
-  }
-  //Paginate
-  $$scope.paginateList = async function () {
-    qTop = qTop + 1;
-    const pages = await getListData(listObj, qTop, qHeight);
+    const newValues = await getListData(listObj, page, qHeight);
     // Issue: missing the `"qFrequencyMode": "V"` param when getting more pages...
-    $$scope.rows = $$scope.rows.concat(pages.flat());
-    // Issue: when applying selection (paint is firing) - the list shrinks back to original page
-    // is it an issue or "as designed"?
-    //Load More Button display none when pages max reached
-    var qCardinal = layout.qListObject.qDimensionInfo.qCardinal;
-    if (qCardinal / qHeight - 1 < qTop) {
-      $$scope.displayMaxPage = "none";
+    console.log("newvalues", newValues);
+    newValues.map((value) => {
+      return {
+        qText: value[0].qText,
+        qNum: value[0].qNum,
+        qElemNumber: value[0].qElemNumber,
+        qState: value[0].qState,
+      };
+    });
+    myDim.values = myDim.values.concat(newValues.flat());
+    if (qCardinal / qHeight - 1 < page) {
+      myDim.displayLoadMore = "none";
     } else {
-      $$scope.displayMaxPage = "block";
+      myDim.displayLoadMore = "block";
     }
+    $$scope.myDim = myDim;
   };
-  var enableSelections = layout.enableSelections;
-  $$scope.enableSelections = enableSelections;
-  var multiSelect = layout.multiSelect;
-  var defaultSelection = layout.defaultSelection,
-    defaultvalue,
-    selectioncount =
-      listObj.layout.qListObject.qDimensionInfo.qStateCounts.qSelected;
-  var selectAlsoThese = layout.selectAlsoThese;
-  var defaultselectionList = selectAlsoThese.split(",");
-  var data = [];
-  var multipleselectValues = [];
-  var selected = 0;
 
-  // Logic for Single Default Values
-  if (enableSelections && multiSelect == false) {
-    layout.qListObject.qDataPages[0].qMatrix.forEach(function (row) {
-      if (defaultSelection == row[0].qText) {
-        defaultvalue = row[0].qElemNumber;
-      }
-    });
-    if (selectioncount == 0) {
-      listObj.selectListObjectValues({
-        qPath: "/qListObjectDef",
-        qValues: [defaultvalue],
-        qToggleMode: false, // true for multi select
-        //qSoftLock: true,
-      });
-    }
-  }
-  //Logic for Multiple Default Values
-  if (enableSelections && multiSelect == true && selectAlsoThese) {
-    layout.qListObject.qDataPages[0].qMatrix.forEach(function (row) {
-      if (row[0].qState === "S") {
-        selected = 1;
-      }
-      data.push(row[0]);
-    });
-    for (var i = 0; i < data.length; i++) {
-      var text = data[i].qText;
-      if (selectioncount == 0) {
-        if (defaultselectionList.length > 0) {
-          for (var v = 0; v < defaultselectionList.length; v++) {
-            if (data[i].qText == defaultselectionList[v]) {
-              multipleselectValues.push(data[i].qElemNumber);
-            }
-          }
-        }
-      } else {
-        multipleselectValues.push(data[i].qElemNumber);
-      }
-    }
-    if (selectioncount == 0) {
-      listObj.selectListObjectValues({
-        qPath: "/qListObjectDef",
-        qValues: multipleselectValues,
-        qToggleMode: true, // true for multi select
-        //qSoftLock: true,
-      });
-    }
-  }
-
+  // Selections
   var dragging = false;
   var beginSelections = false;
   var startEl;
   var startElNum, endElNum;
   var elNumbersToSelect = [];
 
-  $$scope.startDrag = function (el, event) {
-    if (event.which !== 3 && enableSelections && $$scope.mode == "analysis") {
+  $$scope.startDrag = function (fieldName, el, event) {
+    var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
+    if (event.which !== 3 && $$scope.mode == "analysis") {
       startEl = el;
       startElNum = el.qElemNumber;
       dragging = true;
-      // console.log("start with " + el.qText);
+      console.log("start with " + el.qText + " field:" + fieldName);
     }
   };
 
-  $$scope.hoverHandler = function (el, event) {
-    if (!dragging || !enableSelections || $$scope.mode != "analysis" || !multiSelect) return;
-    // console.log("dragging over " + el.qText);
+  $$scope.hoverHandler = async function (fieldName, el, event) {
+    var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
+    var multiSelect = myDim.multiSelect;
+    if (!dragging || $$scope.mode != "analysis" || !multiSelect) return;
+    console.log("dragging over " + el.qText + " field:" + fieldName);
+
     // only apply selection if item is not already selected
-    if (startEl.qState != "S") { // apply selection to start element if not already selected
-      listObj
-          .selectListObjectValues({
-            qPath: "/qListObjectDef",
-            qValues: [startEl.qElemNumber],
-            qToggleMode: multiSelect, // true for multi select
-            //qSoftLock: true,
-          });
-      $$scope.rows.filter((row) => row.qElemNumber == startEl.qElemNumber)[0].qState = "S";
+    if (startEl.qState != "S") {
+      // elNumbersToSelect.push(el.qElemNumber);
+      myDim.values.filter(
+        (row) => row.qElemNumber == startEl.qElemNumber
+      )[0].qState = "S";
     }
 
-    if (el.qState != "S") { // apply selection to hovered element
-      listObj
-          .selectListObjectValues({
-            qPath: "/qListObjectDef",
-            qValues: [el.qElemNumber],
-            qToggleMode: multiSelect, // true for multi select
-            //qSoftLock: true,
-          });
-      $$scope.rows.filter((row) => row.qElemNumber == el.qElemNumber)[0].qState = "S";
+    if (el.qState != "S") {
+      elNumbersToSelect.push(el.qElemNumber);
+      myDim.values.filter(
+        (row) => row.qElemNumber == el.qElemNumber
+      )[0].qState = "S";
     }
-    
   };
 
-  $$scope.endDrag = function (el, event) {
+  $$scope.endDrag = async function (fieldName, el, event) {
+    console.log("endDrag", fieldName, el, event.which);
     if (event.which !== 3) {
+      var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
+      var multiSelect = myDim.multiSelect;
+      var listObj = myDim.listObj;
       dragging = false;
       endElNum = el.qElemNumber;
       var endElState = el.qState;
-      if (enableSelections && $$scope.mode == "analysis") {
-        if (!beginSelections) {
-          // console.log("beginSelections");
-          $$scope.showSelectionToolbar = true;
-          beginSelections = true;
-          listObj.beginSelections({
-            qPaths: ["/qListObjectDef"],
-          });
-        }
-        if (startElNum == endElNum) { // CLICK HANDLER
-          // console.log("click event");
+      if ($$scope.mode == "analysis") {
+        if (startElNum == endElNum) {
+          // CLICK HANDLER
+          console.log("click event");
           var occurance = getOccurence(elNumbersToSelect, endElNum); // return number of occurnaces of item in array
-         
+
           if (multiSelect) {
-            $$scope.showSelectionToolbar = true;
+            myDim.showSelectionToolbar = true;
             // if it's already active or already in array, remove it
             if (endElState == "S" || occurance) {
               elNumbersToSelect = elNumbersToSelect.filter(
                 (v) => v !== endElNum
               );
               // and change state to "O"
-              $$scope.rows.filter(
+              myDim.values.filter(
                 (row) => row.qElemNumber == endElNum
               )[0].qState = "O";
             } else {
               // if it's not active, add it to array
               elNumbersToSelect.push(endElNum);
               // and change state to "S"
-              $$scope.rows.filter(
+              myDim.values.filter(
                 (row) => row.qElemNumber == endElNum
               )[0].qState = "S";
             }
-          } else { // single select - clear all and apply new selection
-            $$scope.showSelectionToolbar = false;
+          } else {
+            // single select - clear all and apply new selection
+            myDim.showSelectionToolbar = false;
             if (endElState == "S") {
               // if already selected, clear the array
               endElNum = false;
             }
-          }
 
-          // console.log("array to select", elNumbersToSelect);
-
-          listObj
-            .selectListObjectValues({
-              qPath: "/qListObjectDef",
-              qValues: el.qElemNumber === false ? [] : [el.qElemNumber],
-              qToggleMode: multiSelect, // true for multi select
-              //qSoftLock: true,
-            })
-            .then(function () {
-              if (!multiSelect) {
-                $$scope.endSelections(true);
-              }
+            await listObj.beginSelections({
+              qPaths: ["/qListObjectDef"],
             });
-        } else { // DRAG HANDLER
-          // console.log("drag event ended");
+            await listObj.selectListObjectValues({
+              qPath: "/qListObjectDef",
+              qValues: endElNum === false ? [] : [endElNum],
+              qToggleMode: false, // true for multi select
+              //qSoftLock: true,
+            });
+            await listObj.endSelections({
+              qAccept: true,
+            });
+          }
+        } else {
+          if (multiSelect) {
+            // DRAG HANDLER
+            console.log("drag event ended");
+            console.log("array to select", elNumbersToSelect);
+            myDim.showSelectionToolbar = true;
+          }
         }
       }
     }
   };
 
-  // approve selection
-  $$scope.endSelections = function (approve) {
-    // console.log("approve selections?", approve);
-    if (!approve) $$scope.selectionsMenuBar("clearAll");
-    listObj.abortListObjectSearch({
-      qPath: "/qListObjectDef",
-    });
-    listObj.endSelections({
-      qAccept: approve,
-    });
-    $$scope.showSelectionToolbar = false;
-    beginSelections = false;
-    elNumbersToSelect = [];
-    // elNumbersToTempActivate = [];
-    //Close
-    $(".dropdown-list .listbox").removeClass("active");
+  $$scope.endSelections = async function (fieldName, approve) {
+    var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
+    var listObj = myDim.listObj;
+    if (approve) {
+      await listObj.beginSelections({
+        qPaths: ["/qListObjectDef"],
+      });
+      await listObj.selectListObjectValues({
+        qPath: "/qListObjectDef",
+        qValues: elNumbersToSelect,
+        qToggleMode: true, // true for multi select
+        //qSoftLock: true,
+      });
+      await listObj.endSelections({
+        qAccept: approve,
+      });
+    } else {
+      $$scope.selectionsMenuBar(fieldName, "clearAll");
+      await listObj.endSelections({
+        qAccept: approve,
+      });
+    }
   };
 
-  $$scope.selectionsMenuBar = function (item) {
+  //Selections Menu bar
+  $$scope.selectionsMenuBar = async function (fieldName, item) {
+    var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
+    console.log("myDim", myDim);
+    var fieldName = myDim.name;
     var items = {
       selectAll: function () {
-        app.field($$scope.dimensionsLabel).selectAll();
+        app.field(fieldName).selectAll();
       },
       clearAll: function () {
-        app.field($$scope.dimensionsLabel).clear();
+        app.field(fieldName).clear();
       },
       selectExcluded: function () {
-        app.field($$scope.dimensionsLabel).selectExcluded();
+        app.field(fieldName).selectExcluded();
       },
       selectPossible: function () {
-        app.field($$scope.dimensionsLabel).selectPossible();
+        app.field(fieldName).selectPossible();
       },
       selectAlternative: function () {
-        app.field($$scope.dimensionsLabel).selectAlternative();
+        app.field(fieldName).selectAlternative();
       },
       lockField: function () {
-        app.field($$scope.dimensionsLabel).lock();
+        app.field(fieldName).lock();
       },
       unlockField: function () {
-        app.field($$scope.dimensionsLabel).unlock();
+        app.field(fieldName).unlock();
       },
     };
     return items[item]() || "not found";
   };
+
   //Search Functionality
-  $$scope.searchFieldDataForString = async function (string) {
+  $$scope.searchFieldDataForString = async function (fieldName, string) {
+    var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
+    var listObj = myDim.listObj;
+    console.log(listObj);
     var searchResults;
     if (string) {
       searchResults = await listObj.searchListObjectFor({
@@ -288,269 +322,25 @@ export default async function ($element, layout) {
     } else {
       listObj.abortListObjectSearch({ qPath: "/qListObjectDef" });
     }
-    const pages = await getListData(listObj, 0, qHeight);
-    $$scope.rows = pages.flat();
+    const pages = await getListData(listObj, 0, myDim.qHeight);
+    myDim.values = pages.flat();
   };
   //To Clear Search
-  $$scope.clearsearchValue = async function () {
+  $$scope.clearsearchValue = async function (fieldName) {
+    var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
+    var listObj = myDim.listObj;
     listObj.abortListObjectSearch({ qPath: "/qListObjectDef" });
-    var pages = await getListData(listObj, 0, qHeight);
-    $$scope.rows = pages.flat();
+    var pages = await getListData(listObj, 0, myDim.qHeight);
+    myDim.values = pages.flat();
   };
-  async function getListData(listObj, qTop, qHeight) {
-    const result = await listObj.getListObjectData({
-      qPath: "/qListObjectDef",
-      qPages: [
-        {
-          qTop: qTop * qHeight,
-          qLeft: 0,
-          qHeight: qHeight,
-          qWidth: 2,
-        },
-      ],
-    });
-    return result[0].qMatrix;
-  }
+  //Interactivity UI Props for Search bar
+  layout.lists.forEach(async (field) => {
+    $$scope.enableSearch = field.enableSearch;
+    $$scope.enableSearch = {
+      display: field.enableSearch == true ? "onset" : "none",
+    };
+  });
 
-  // To get the state count and logic for selected count state bar
-  var qselectedCount = layout.qListObject.qDimensionInfo.qStateCounts.qSelected;
-  var percentSelected = (qselectedCount / qCardinal) * 100;
-  $$scope.percentSelected = percentSelected;
-  var percentAlternative = 100 - percentSelected;
-  $$scope.percentAlternative = percentAlternative;
-
-  // To switch between listbox, dropdown and buttongroup
-  $$scope.ui = layout.ui;
-  $$scope.showButtongroup = false;
-  $$scope.showDropdown = false;
-  $$scope.showListbox = false;
-
-  var maxListHeight = 85;
-  // determine UI
-  if ($$scope.ui == "listbox") {
-    if ($$scope.height > maxListHeight) {
-      $$scope.showListbox = true;
-      $$scope.showDropdown = false;
-      $$scope.listboxStyle = "";
-    } else {
-      $$scope.showListbox = false;
-      $$scope.showDropdown = true;
-      $$scope.listboxStyle = { position: "fixed", width: $$scope.width + "px" };
-    }
-  } else if ($$scope.ui == "buttongroup") {
-    if ($$scope.height > maxListHeight) {
-      $$scope.showButtongroup = true;
-      $$scope.showDropdown = false;
-    } else {
-      $$scope.showButtongroup = false;
-      $$scope.showDropdown = true;
-      $$scope.listboxStyle = { position: "fixed", width: $$scope.width + "px" };
-    }
-  } else if ($$scope.ui == "dropdown") {
-    if ($$scope.height > maxListHeight) {
-      $$scope.showButtongroup = false;
-      $$scope.showListbox = false;
-      $$scope.showDropdown = true;
-    } else {
-      $$scope.showButtongroup = false;
-      $$scope.showListbox = false;
-      $$scope.showDropdown = true;
-      $$scope.listboxStyle = { position: "fixed", width: $$scope.width + "px" };
-    }
-  }
-  //Header Props
-  //1.FontSize
-  var HeaderFontsize = layout.HeaderFontsize;
-  $$scope.HeaderFontsize = HeaderFontsize;
-  //2.FontFamily
-  var HeaderFontFamilySelect = layout.HeaderFontFamilySelect;
-  $$scope.HeaderFontFamilySelect = HeaderFontFamilySelect;
-  //3.FontStyle
-  var HeaderFontStyle = layout.HeaderFontStyle;
-  $$scope.HeaderFontStyle = HeaderFontStyle;
-  //4.Color
-  var HeaderColorSwitch = layout.HeaderColorSwitch;
-  $$scope.HeaderColorSwitch = HeaderColorSwitch;
-  var HeaderActiveColorPicker = layout.HeaderActiveColorPicker;
-  $$scope.HeaderActiveColorPicker = HeaderActiveColorPicker;
-  //5.Bg Color
-  var HeaderBgColor = layout.HeaderBgColor;
-  $$scope.HeaderBgColor = HeaderBgColor;
-  //6.Alignment
-  var HeaderAlign = layout.HeaderAlign;
-  $$scope.HeaderAlign = HeaderAlign;
-  //7.Hide/Show
-  var HeaderShow = layout.HeaderShow;
-  $$scope.HeaderShow = HeaderShow;
-  ////Final Adding these to the layout
-  $$scope.HeaderStyle = {
-    display: HeaderShow == false ? "none" : "",
-    "font-size": HeaderFontsize + "px",
-    "font-family": HeaderFontFamilySelect,
-    "font-style": HeaderFontStyle,
-    "font-weight": layout.HeaderFontStyle == "bold" ? "bold" : "normal",
-    "text-decoration":
-      layout.HeaderFontStyle == "underline" ? "underline" : "none",
-    color: layout.HeaderColorSwitch ? "#000000" : HeaderActiveColorPicker.color,
-    "background-color": HeaderBgColor,
-    "text-align": HeaderAlign,
-  };
-  //Cell Props
-  //0.Height
-  var ListItemHeight = layout.ListItemHeight;
-  $$scope.ListItemHeight = ListItemHeight;
-  //1.FontSize and Padding
-  var ListItemFontsize = layout.ListItemFontsize;
-  $$scope.ListItemFontsize = ListItemFontsize;
-  //2.FontFamily
-  var ListItemFontFamilySelect = layout.ListItemFontFamilySelect;
-  $$scope.ListItemFontFamilySelect = ListItemFontFamilySelect;
-  //3.FontStyle
-  var ListItemFontStyle = layout.ListItemFontStyle;
-  $$scope.ListItemFontStyle = ListItemFontStyle;
-  //5.Alignment
-  var ListItemAlign = layout.ListItemAlign;
-  $$scope.ListItemAlign = ListItemAlign;
-  //6.Border
-  var ListItemBorderSwitch = layout.ListItemBorderSwitch;
-  $$scope.ListItemBorderSwitch = ListItemBorderSwitch;
-  var ListItemBorderType = layout.ListItemBorderType;
-  $$scope.ListItemBorderType = ListItemBorderType;
-  var ListItemBorderWidth = layout.ListItemBorderWidth;
-  $$scope.ListItemBorderWidth = ListItemBorderWidth;
-  var ListItemBorderColor = layout.ListItemBorderColor;
-  $$scope.ListItemBorderColor = ListItemBorderColor;
-  ////Final Adding these to the layout
-  $$scope.CellStyle = {
-    "font-size": ListItemFontsize + "px",
-    height: ListItemHeight + "px",
-    "font-family": ListItemFontFamilySelect,
-    "font-style": ListItemFontStyle,
-    "font-weight": layout.ListItemFontStyle == "bold" ? "bold" : "normal",
-    "text-decoration":
-      layout.ListItemFontStyle == "underline" ? "underline" : "none",
-    "text-align": ListItemAlign,
-    "border-bottom-style": layout.ListItemBorderSwitch
-      ? ListItemBorderType
-      : "none",
-    "border-bottom-width": layout.ListItemBorderSwitch
-      ? ListItemBorderWidth + "px"
-      : "0px",
-    "border-bottom-color": layout.ListItemBorderSwitch
-      ? ListItemBorderColor.color
-      : "#000000",
-  };
-  //Dropdown Props
-  //1.Height
-  var DropdownHeight = layout.DropdownHeight;
-  $$scope.DropdownHeight = DropdownHeight;
-  //2.Width
-  var DropdownWidth = layout.DropdownWidth;
-  $$scope.DropdownWidth = DropdownWidth;
-  //3.Background Color
-  var DropdownBgColorPicker = layout.DropdownBgColorPicker;
-  $$scope.DropdownBgColorPicker = DropdownBgColorPicker;
-  ////Final Adding these to the layout
-  $$scope.dropdownStyle = {
-    height: DropdownHeight + "px",
-    width: DropdownWidth + "%",
-    background: DropdownBgColorPicker.color
-  };
-  //Btn Props
-  //1.FontSize, Height, Width , Spacing ,Grouped
-  var BtnFontsize = layout.BtnFontsize;
-  $$scope.BtnFontsize = BtnFontsize;
-  //Height
-  var BtnHeight = layout.BtnHeight;
-  $$scope.BtnHeight = BtnHeight;
-  //Width
-  var BtnWidth = layout.BtnWidth;
-  $$scope.BtnWidth = BtnWidth;
-  //Display
-  var BtnOrientation = layout.BtnOrientation;
-  $$scope.BtnOrientation = BtnOrientation;
-  //Spacing/Margin
-  var BtnSpacing = layout.BtnSpacing;
-  $$scope.BtnSpacing = BtnSpacing;
-  //Grouped
-  var BtnGrouped = layout.BtnGrouped;
-  $$scope.BtnGrouped = BtnGrouped;
-  //2.FontFamily
-  var BtnFontFamilySelect = layout.BtnFontFamilySelect;
-  $$scope.BtnFontFamilySelect = BtnFontFamilySelect;
-  //3.FontStyle
-  var BtnFontStyle = layout.BtnFontStyle;
-  $$scope.BtnFontStyle = BtnFontStyle;
-  //4.FontColor
-  //5.Border
-  var BtnBorderSwitch = layout.BtnBorderSwitch;
-  $$scope.BtnBorderSwitch = BtnBorderSwitch;
-  var BtnBorderType = layout.BtnBorderType;
-  $$scope.BtnBorderType = BtnBorderType;
-  var BtnBorderWidth = layout.BtnBorderWidth;
-  $$scope.BtnBorderWidth = BtnBorderWidth;
-  var BtnBorderColor = layout.BtnBorderColor;
-  $$scope.BtnBorderColor = BtnBorderColor;
-  //6.Radius
-  var BtnGlobalRadius = layout.BtnGlobalRadius;
-  $$scope.BtnGlobalRadius = BtnGlobalRadius;
-  var BtnTopLeftRadius = layout.BtnTopLeftRadius;
-  $$scope.BtnTopLeftRadius = BtnTopLeftRadius;
-  var BtnTopRightRadius = layout.BtnTopRightRadius;
-  $$scope.BtnTopRightRadius = BtnTopRightRadius;
-  var BtnBottomRightRadius = layout.BtnBottomRightRadius;
-  $$scope.BtnBottomRightRadius = BtnBottomRightRadius;
-  var BtnBottomLeftRadius = layout.BtnBottomLeftRadius;
-  $$scope.BtnBottomLeftRadius = BtnBottomLeftRadius;
-  ////Final Adding these to the layout
-  $$scope.BtnGroupStyle = {
-    "font-size": BtnFontsize + "px",
-    height: BtnHeight + "px",
-    width: BtnWidth + "px",
-    display: BtnOrientation,
-    "margin-top": layout.BtnGrouped == true ? "0" : BtnSpacing + "px",
-    "margin-right": layout.BtnGrouped == true ? "0" : BtnSpacing + "px",
-    "margin-bottom": layout.BtnGrouped == true ? "0" : BtnSpacing + "px",
-    "margin-left": layout.BtnGrouped == true ? "0" : BtnSpacing + "px",
-    "font-family": BtnFontFamilySelect,
-    "font-style": BtnFontStyle,
-    "font-weight": layout.BtnFontStyle == "bold" ? "bold" : "normal",
-    "text-decoration":
-      layout.BtnFontStyle == "underline" ? "underline" : "none",
-    "border-top-style": layout.BtnBorderSwitch ? BtnBorderType : "none",
-    "border-right-style": layout.BtnBorderSwitch ? BtnBorderType : "none",
-    "border-bottom-style": layout.BtnBorderSwitch ? BtnBorderType : "none",
-    "border-left-style": layout.BtnBorderSwitch ? BtnBorderType : "none",
-    "border-top-width": layout.BtnBorderSwitch ? BtnBorderWidth + "px" : "0px",
-    "border-right-width": layout.BtnBorderSwitch
-      ? BtnBorderWidth + "px"
-      : "0px",
-    "border-bottom-width": layout.BtnBorderSwitch
-      ? BtnBorderWidth + "px"
-      : "0px",
-    "border-left-width": layout.BtnBorderSwitch ? BtnBorderWidth + "px" : "0px",
-    "border-top-color": layout.BtnBorderSwitch
-      ? BtnBorderColor.color
-      : "#000000",
-    "border-right-color": layout.BtnBorderSwitch
-      ? BtnBorderColor.color
-      : "#000000",
-    "border-bottom-color": layout.BtnBorderSwitch
-      ? BtnBorderColor.color
-      : "#000000",
-    "border-left-color": layout.BtnBorderSwitch
-      ? BtnBorderColor.color
-      : "#000000",
-    "border-radius": (layout.BtnGrouped = true ? "0" : BtnGlobalRadius + "px"),
-    "border-top-left-radius":
-      layout.BtnGrouped == true ? "0" : BtnTopLeftRadius + "px",
-    "border-top-right-radius":
-      layout.BtnGrouped == true ? "0" : BtnTopRightRadius + "px",
-    "border-bottom-right-radius":
-      layout.BtnGrouped == true ? "0" : BtnBottomRightRadius + "px",
-    "border-bottom-left-radius":
-      layout.BtnGrouped == true ? "0" : BtnBottomLeftRadius + "px",
-  };
   //Interactivity UI Props for Selections Menu
   $$scope.enableSelectionsMenu = layout.enableSelectionsMenu;
   $$scope.enableSelectionsMenu = {
@@ -585,23 +375,92 @@ export default async function ($element, layout) {
     display: layout.enableUnlockField == true ? "onset" : "none",
   };
 
-  //Additional colors logic
-  var PossibleBgColorPicker = layout.PossibleBgColorPicker;
-  $$scope.PossibleBgColorPicker = PossibleBgColorPicker;
-  var PossibleFontColorPicker = layout.PossibleFontColorPicker;
-  $$scope.PossibleFontColorPicker = PossibleFontColorPicker;
-  var SelectedBgColorPicker = layout.SelectedBgColorPicker;
-  $$scope.SelectedBgColorPicker = SelectedBgColorPicker;
-  var SelectedFontColorPicker = layout.SelectedFontColorPicker;
-  $$scope.SelectedFontColorPicker = SelectedFontColorPicker;
-  var ExcludedBgColorPicker = layout.ExcludedBgColorPicker;
-  var AlternateBgColorPicker = layout.AlternateBgColorPicker;
-  $$scope.AlternateBgColorPicker = AlternateBgColorPicker;
-  var AlternateFontColorPicker = layout.AlternateFontColorPicker;
-  $$scope.AlternateFontColorPicker = AlternateFontColorPicker;
-  $$scope.ExcludedBgColorPicker = ExcludedBgColorPicker;
-  var ExcludedFontColorPicker = layout.ExcludedFontColorPicker;
-  $$scope.ExcludedFontColorPicker = ExcludedFontColorPicker;
+  /*Default Selection (Single/Multiple) logic*/ //Enter the values like how you search in filter box . For example (multiple) : "value1" + "value2"
+  layout.lists.forEach(async (field) => {
+    var defaultSelection = field.defaultSelection,
+      selectioncount = field.qListObject.qDimensionInfo.qStateCounts.qSelected;
+    var fieldName = field.qListObject.qDimensionInfo.qFallbackTitle;
+    // if we have defaultSelection, we find the corresponding qElemNumber
+    // if there are no currentSelections on the dateField, we apply default selections
+    if (defaultSelection && selectioncount == 0) {
+      app
+        .createList({
+          qDef: { qFieldDefs: [fieldName] },
+          qInitialDataFetch: [{ qHeight: 999, qWidth: 1 }],
+        })
+        .then(function (listObj) {
+          listObj
+            .searchListObjectFor({
+              qPath: "/qListObjectDef",
+              qMatch: defaultSelection,
+            })
+            .then(function (search) {
+              listObj.getLayout().then(function (layout) {
+                console.log({ layout });
+                var elNumArray = layout.qListObject.qDataPages[0].qMatrix.map(
+                  function (el) {
+                    console.log(el);
+                    return el[0].qElemNumber;
+                  }
+                );
+                if (elNumArray.length != 0) {
+                  listObj.selectListObjectValues(
+                    "/qListObjectDef",
+                    elNumArray,
+                    false
+                  );
+                }
+              });
+            });
+        });
+    }
+  });
+
+  //Header Props: Can always customize from layout props
+  $$scope.HeaderStyle = {
+    "font-size": 13 + "px",
+    "font-family": "QlikView Sans, sans-serif", //change to intuit AvenirNEXT
+    "font-style": "bold",
+    "font-weight": "bold",
+    "text-decoration": "none",
+    color: "#595959",
+    "text-align": "left",
+    margin: 5 + "px",
+  };
+  //Cell Props: Can always customize from layout props
+  $$scope.CellStyle = {
+    "font-size": 13 + "px",
+    height: 30 + "px",
+    "font-family": "QlikView Sans, sans-serif", //change to intuit AvenirNEXT
+    "font-style": "normal",
+    "font-weight": "normal",
+    "text-decoration": "none",
+    "text-align": "left",
+    "border-bottom-style": "solid",
+    "border-bottom-width": 1 + "px",
+    "border-bottom-color": "#ddd",
+  };
+  //Dropdown Props: Can always customize from layout props
+  $$scope.dropdownStyle = {
+    height: 30 + "px",
+    width: 100 + "%",
+    background: "#fff",
+  };
+  //Button Group Props: Can always customize from layout props
+  $$scope.BtnGroupStyle = {
+    "font-size": 13 + "px",
+    height: 28 + "px",
+    display: "inline",
+    margin: 3 + "px",
+    "font-family": "QlikView Sans, sans-serif", //change to intuit AvenirNEXT
+    "font-style": "normal",
+    "font-weight": "normal",
+    "text-decoration": "none",
+    "border-style": "solid",
+    "border-width": "1px",
+    "border-color": "rgb(221, 221, 221)",
+    "border-radius": 20 + "px",
+  };
 
   //Additional colors logic
   var sheet = $(`style#css${layout.qInfo.qId}`);
@@ -613,83 +472,24 @@ export default async function ($element, layout) {
   }
   document.body.appendChild(sheet);
   sheet.innerHTML = `
-  header#${$$scope.qId}_title { display: none; }
-  #custom-filter-${$$scope.qId} .listbox .list-item.O {
-    background-color: ${layout.PossibleBgColorPicker.color} !important;
-    color:  ${layout.PossibleFontColorPicker.color} !important;
-    border-bottom: 1px solid rgb(221, 221, 221) !important;
-  }
-  #custom-filter-${$$scope.qId} .listbox .list-item.S {
-    background-color: ${layout.SelectedBgColorPicker.color} !important;
-    color: ${layout.SelectedFontColorPicker.color} !important;
-    border-bottom: 1px solid rgb(221, 221, 221) !important;
-  }
-  #custom-filter-${$$scope.qId} .listbox .list-item.A {
-    background-color: ${layout.AlternateBgColorPicker.color} !important;
-    color: ${layout.AlternateFontColorPicker.color} !important;
-    border-bottom: 1px solid #fff !important;
-  }
-  #custom-filter-${$$scope.qId} .listbox .list-item.X {
-    background-color: ${layout.ExcludedBgColorPicker.color} !important;
-    color: ${layout.ExcludedFontColorPicker.color} !important;
-    border-bottom: 1px solid rgb(221, 221, 221) !important;
-  }
-  #custom-filter-${$$scope.qId} .button-item.O {
-    background-color: ${layout.PossibleBgColorPicker.color} !important;
-    color: ${layout.PossibleFontColorPicker.color} !important;
-    border-bottom: 1px solid rgb(221, 221, 221) !important;
-  }
-  #custom-filter-${$$scope.qId} .button-item.S {
-    background-color: ${layout.SelectedBgColorPicker.color} !important;
-    color: ${layout.SelectedFontColorPicker.color} !important;
-    border-bottom: 1px solid rgb(221, 221, 221) !important;
-  }
-  #custom-filter-${$$scope.qId} .button-item.A {
-    background-color: ${layout.AlternateBgColorPicker.color} !important;
-    color: ${layout.AlternateFontColorPicker.color} !important;
-    border-bottom: 1px solid #fff !important;
-  }
-  #custom-filter-${$$scope.qId} .button-item.X {
-    background-color: ${layout.ExcludedBgColorPicker.color} !important;
-    color: ${layout.ExcludedFontColorPicker.color} !important;
-    border-bottom: 1px solid rgb(221, 221, 221) !important;
-  }
-  /* When the checkbox is checked, add a tick */
-  .listboxprops .list-item.S .checkbox::before {
-  content: "✔";
-  font-weight: 800;
-  top: -1px;
-  left: 3px;
-  color: ${layout.SelectedBgColorPicker.color} !important;
-  position: absolute;
-  } 
-  /* When the radiobutton is checked, add a tick */
-  .listboxprops .list-item.S .radiobtn::before {
-  color: ${layout.SelectedBgColorPicker.color} !important;
-  }
-  article:has(#custom-filter-${$$scope.qId} .active){
-    z-index: 1020;
-  }
-  /** How to exclude this for checkbox and radio? */
-  .listboxprops .list-item.vlist.S::before {
-    content: "✔";
-    color: #fff;
-    flex-grow: inherit;
-    flex-shrink: 0;
-    order: 4;
-    padding: 0 6px 0 0;
-    text-align: center;
-    width: 16px;
-    float: right;
-  }
-  /* dynamically change colors for state bars */
-  #custom-filter-${$$scope.qId} .state-count-bar .state.selected {
-    background: ${layout.SelectedBgColorPicker.color} !important;
-  }
-  #custom-filter-${$$scope.qId} .state-count-bar .state.alternative {
-    background: ${layout.AlternateBgColorPicker.color} !important;
-  }
-  /* For icons on hover to remove */
+
+/*  #${$$scope.qId}_content {
+  overflow-x: scroll;
+  overflow-y: hidden;
+ } */
+ #custom-filter-${$$scope.qId}::-webkit-scrollbar {
+  width: 5px;
+  height: 7px;
+}
+#custom-filter-${$$scope.qId}::-webkit-scrollbar-track {
+  background-color: #e4e4e4;
+  border-radius: 100px;
+}
+#custom-filter-${$$scope.qId}::-webkit-scrollbar-thumb {
+  background-color: #999;
+  border-radius: 100px;
+}
+ /* For icons on hover to remove */
   .object-wrapper:has([aria-labelledby="${$$scope.qId}_type ${$$scope.qId}_title ${$$scope.qId}_noTitle ${$$scope.qId}_content"]) .qv-object-nav
   {
     display: none !important;
@@ -699,5 +499,78 @@ export default async function ($element, layout) {
   {
     border: 0 !important;
   }
-  `;
+
+ /* When the checkbox is checked, add a tick */
+ .listboxprops .list-item.S .checkbox::before {
+ content: "✔";
+ font-weight: 800;
+ top: -1px;
+ left: 3px;
+ color: ${layout.SelectedBgColorPicker.color} !important;
+ position: absolute;
+ } 
+ /* When the radiobutton is checked, add a tick */
+ .listboxprops .list-item.S .radiobtn::before {
+ color: ${layout.SelectedBgColorPicker.color} !important;
+ }
+ /** How to exclude this for checkbox and radio? */
+ .listboxprops .list-item.vlist.S::before {
+   content: "✔";
+   color: #fff;
+   flex-grow: inherit;
+   flex-shrink: 0;
+   order: 4;
+   padding: 0 6px 0 0;
+   text-align: center;
+   width: 16px;
+   float: right;
+ }
+ .listbox .list-item.O {
+  background-color: ${layout.PossibleBgColorPicker.color} !important;
+  color:  ${layout.PossibleFontColorPicker.color} !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.listbox .list-item.S {
+  background-color: ${layout.SelectedBgColorPicker.color} !important;
+  color: ${layout.SelectedFontColorPicker.color} !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.listbox .list-item.A{
+  background-color: ${layout.AlternateBgColorPicker.color} !important;
+  color: ${layout.AlternateFontColorPicker.color} !important;
+  border-bottom: 1px solid #fff !important;
+}
+.listbox .list-item.X {
+  background-color: ${layout.ExcludedBgColorPicker.color} !important;
+  color: ${layout.ExcludedFontColorPicker.color} !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.button-item.O {
+  background-color: ${layout.PossibleBgColorPicker.color} !important;
+  color: ${layout.PossibleFontColorPicker.color} !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.button-item.S {
+  background-color: ${layout.SelectedBgColorPicker.color} !important;
+  color: ${layout.SelectedFontColorPicker.color} !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.button-item.A {
+  background-color: ${layout.AlternateBgColorPicker.color} !important;
+  color: ${layout.AlternateFontColorPicker.color} !important;
+  border-bottom: 1px solid #fff !important;
+}
+.button-item.X {
+  background-color: ${layout.ExcludedBgColorPicker.color} !important;
+  color: ${layout.ExcludedFontColorPicker.color} !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+  /* dynamically change colors for state bars */
+.state-count-bar .state.selected {
+  background: ${layout.SelectedBgColorPicker.color} !important;
+}
+.state-count-bar .state.alternative {
+  background: ${layout.AlternateBgColorPicker.color} !important;
+}
+
+ `;
 }
