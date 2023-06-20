@@ -506,12 +506,12 @@ export default async function ($element, layout) {
  font-weight: 800;
  top: -1px;
  left: 3px;
- color: ${layout.SelectedBgColorPicker.color} !important;
+ color: #009845 !important;
  position: absolute;
  } 
  /* When the radiobutton is checked, add a tick */
  .listboxprops .list-item.S .radiobtn::before {
- color: ${layout.SelectedBgColorPicker.color} !important;
+ color: #009845 !important;
  }
  /** How to exclude this for checkbox and radio? */
  .listboxprops .list-item.vlist.S::before {
@@ -526,50 +526,51 @@ export default async function ($element, layout) {
    float: right;
  }
  .listbox .list-item.O {
-  background-color: ${layout.PossibleBgColorPicker.color} !important;
-  color:  ${layout.PossibleFontColorPicker.color} !important;
+  /*background-color: ${layout.PossibleBgColorPicker.color} !important;*/ // We are not making it dynamic to users, if needed add from layout def props
+  /*background-color: #fff !important;*/
+  color: #595959 !important;
   border-bottom: 1px solid rgb(221, 221, 221) !important;
 }
 .listbox .list-item.S {
-  background-color: ${layout.SelectedBgColorPicker.color} !important;
-  color: ${layout.SelectedFontColorPicker.color} !important;
+  background-color: #009845 !important;
+  color: #fff !important;
   border-bottom: 1px solid rgb(221, 221, 221) !important;
 }
 .listbox .list-item.A{
-  background-color: ${layout.AlternateBgColorPicker.color} !important;
-  color: ${layout.AlternateFontColorPicker.color} !important;
+  background-color: lightgray !important;
+  color: #595959 !important;
   border-bottom: 1px solid #fff !important;
 }
 .listbox .list-item.X {
-  background-color: ${layout.ExcludedBgColorPicker.color} !important;
-  color: ${layout.ExcludedFontColorPicker.color} !important;
+  background-color: darkgray !important;
+  color: #fff !important;
   border-bottom: 1px solid rgb(221, 221, 221) !important;
 }
 .button-item.O {
-  background-color: ${layout.PossibleBgColorPicker.color} !important;
-  color: ${layout.PossibleFontColorPicker.color} !important;
+  background-color: #fff !important;
+  color: #595959 !important;
   border-bottom: 1px solid rgb(221, 221, 221) !important;
 }
 .button-item.S {
-  background-color: ${layout.SelectedBgColorPicker.color} !important;
-  color: ${layout.SelectedFontColorPicker.color} !important;
+  background-color: #009845 !important;
+  color: #fff !important;
   border-bottom: 1px solid rgb(221, 221, 221) !important;
 }
 .button-item.A {
-  background-color: ${layout.AlternateBgColorPicker.color} !important;
-  color: ${layout.AlternateFontColorPicker.color} !important;
+  background-color: lightgray !important;
+  color: #595959 !important;
   border-bottom: 1px solid #fff !important;
 }
 .button-item.X {
-  background-color: ${layout.ExcludedBgColorPicker.color} !important;
-  color: ${layout.ExcludedFontColorPicker.color} !important;
+  background-color: darkgray !important;
+  color: #fff !important;
   border-bottom: 1px solid rgb(221, 221, 221) !important;
   /* dynamically change colors for state bars */
 .state-count-bar .state.selected {
-  background: ${layout.SelectedBgColorPicker.color} !important;
+  background: #009845 !important;
 }
 .state-count-bar .state.alternative {
-  background: ${layout.AlternateBgColorPicker.color} !important;
+  background: lightgray !important;
 }
 
  `;
