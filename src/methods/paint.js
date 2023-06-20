@@ -489,6 +489,19 @@ export default async function ($element, layout) {
   background-color: #999;
   border-radius: 100px;
 }
+
+.chart-container::-webkit-scrollbar {
+  width: 5px;
+  height: 7px;
+}
+.chart-container::-webkit-scrollbar-track {
+  background-color: #e4e4e4;
+  border-radius: 100px;
+}
+.chart-container::-webkit-scrollbar-thumb {
+  background-color: #999;
+  border-radius: 100px;
+}
  /* For icons on hover to remove */
   .object-wrapper:has([aria-labelledby="${$$scope.qId}_type ${$$scope.qId}_title ${$$scope.qId}_noTitle ${$$scope.qId}_content"]) .qv-object-nav
   {
