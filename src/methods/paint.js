@@ -76,6 +76,10 @@ export default async function ($element, layout) {
           (field.qListObject.qDimensionInfo.qStateCounts.qSelected /
             field.qListObject.qDimensionInfo.qCardinal) *
             100,
+        percentOption:
+          (field.qListObject.qDimensionInfo.qStateCounts.qOption /
+            field.qListObject.qDimensionInfo.qCardinal) *
+          100,
         values: field.qListObject.qDataPages[0].qMatrix.map((value) => {
           return {
             qText: value[0].qText,
@@ -85,7 +89,6 @@ export default async function ($element, layout) {
           };
         }),
       };
-      console.log("dimData", $$scope.dimData);
       // store the field in the dimDataStore
       if (!storedField) {
         $$scope.dimDataStore.push({
@@ -129,7 +132,6 @@ export default async function ($element, layout) {
 
     const newValues = await getListData(listObj, page, qHeight);
     // Issue: missing the `"qFrequencyMode": "V"` param when getting more pages...
-    console.log("newvalues", newValues);
     newValues.map((value) => {
       return {
         qText: value[0].qText,
@@ -160,7 +162,6 @@ export default async function ($element, layout) {
       startEl = el;
       startElNum = el.qElemNumber;
       dragging = true;
-      console.log("start with " + el.qText + " field:" + fieldName);
     }
   };
 
@@ -168,7 +169,6 @@ export default async function ($element, layout) {
     var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
     var multiSelect = myDim.multiSelect;
     if (!dragging || $$scope.mode != "analysis" || !multiSelect) return;
-    console.log("dragging over " + el.qText + " field:" + fieldName);
 
     // only apply selection if item is not already selected
     if (startEl.qState != "S") {
@@ -187,7 +187,6 @@ export default async function ($element, layout) {
   };
 
   $$scope.endDrag = async function (fieldName, el, event) {
-    console.log("endDrag", fieldName, el, event.which);
     if (event.which !== 3) {
       var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
       var multiSelect = myDim.multiSelect;
@@ -198,7 +197,6 @@ export default async function ($element, layout) {
       if ($$scope.mode == "analysis") {
         if (startElNum == endElNum) {
           // CLICK HANDLER
-          console.log("click event");
           var occurance = getOccurence(elNumbersToSelect, endElNum); // return number of occurnaces of item in array
 
           if (multiSelect) {
@@ -244,8 +242,6 @@ export default async function ($element, layout) {
         } else {
           if (multiSelect) {
             // DRAG HANDLER
-            console.log("drag event ended");
-            console.log("array to select", elNumbersToSelect);
             myDim.showSelectionToolbar = true;
           }
         }
@@ -280,7 +276,6 @@ export default async function ($element, layout) {
   //Selections Menu bar
   $$scope.selectionsMenuBar = async function (fieldName, item) {
     var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
-    console.log("myDim", myDim);
     var fieldName = myDim.name;
     var items = {
       selectAll: function () {
@@ -312,7 +307,6 @@ export default async function ($element, layout) {
   $$scope.searchFieldDataForString = async function (fieldName, string) {
     var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
     var listObj = myDim.listObj;
-    console.log(listObj);
     var searchResults;
     if (string) {
       searchResults = await listObj.searchListObjectFor({
@@ -396,10 +390,8 @@ export default async function ($element, layout) {
             })
             .then(function (search) {
               listObj.getLayout().then(function (layout) {
-                console.log({ layout });
                 var elNumArray = layout.qListObject.qDataPages[0].qMatrix.map(
                   function (el) {
-                    console.log(el);
                     return el[0].qElemNumber;
                   }
                 );
@@ -538,53 +530,5 @@ export default async function ($element, layout) {
    width: 16px;
    float: right;
  }
- .listbox .list-item.O {
-  /*background-color: ${layout.PossibleBgColorPicker.color} !important;*/ // We are not making it dynamic to users, if needed add from layout def props
-  /*background-color: #fff !important;*/
-  color: #595959 !important;
-  border-bottom: 1px solid rgb(221, 221, 221) !important;
-}
-.listbox .list-item.S {
-  background-color: #009845 !important;
-  color: #fff !important;
-  border-bottom: 1px solid rgb(221, 221, 221) !important;
-}
-.listbox .list-item.A{
-  background-color: lightgray !important;
-  color: #595959 !important;
-  border-bottom: 1px solid #fff !important;
-}
-.listbox .list-item.X {
-  background-color: darkgray !important;
-  color: #fff !important;
-  border-bottom: 1px solid rgb(221, 221, 221) !important;
-}
-.button-item.O {
-  background-color: #fff !important;
-  color: #595959 !important;
-  border-bottom: 1px solid rgb(221, 221, 221) !important;
-}
-.button-item.S {
-  background-color: #009845 !important;
-  color: #fff !important;
-  border-bottom: 1px solid rgb(221, 221, 221) !important;
-}
-.button-item.A {
-  background-color: lightgray !important;
-  color: #595959 !important;
-  border-bottom: 1px solid #fff !important;
-}
-.button-item.X {
-  background-color: darkgray !important;
-  color: #fff !important;
-  border-bottom: 1px solid rgb(221, 221, 221) !important;
-  /* dynamically change colors for state bars */
-.state-count-bar .state.selected {
-  background: #009845 !important;
-}
-.state-count-bar .state.alternative {
-  background: lightgray !important;
-}
-
  `;
 }

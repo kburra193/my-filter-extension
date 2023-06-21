@@ -5,7 +5,7 @@ export default [
   "$element",
   "$sce",
   async function ($scope, $element, $sce) {
-     // console.log("controller_$scope", $scope);
+    // console.log("controller_$scope", $scope);
     $scope.dimDataStore = [];
     //Visible SelectionsMenu
     $scope.IsVisibleSelectionsMenuItems = false;
@@ -64,7 +64,8 @@ export default [
       }
 
       //define "left" position to center the popover to the dropdown
-      var popoverLeft = offset.left + (($dropdown.outerWidth() - $popover.outerWidth())/2);
+      var popoverLeft =
+        offset.left + ($dropdown.outerWidth() - $popover.outerWidth()) / 2;
       // if popoverLeft is negative, popoverLeft should be 10
       if (popoverLeft < 0) {
         // console.log("popoverLeft is negative");
@@ -90,10 +91,16 @@ export default [
 
       if ($popover.hasClass("active")) {
         // remove from body and insertAfter to the dropdown and remove the active class
-        $popover.detach().appendTo($dropdownList).removeClass("active floating-popover");
+        $popover
+          .detach()
+          .appendTo($dropdownList)
+          .removeClass("active floating-popover");
       } else {
         // first, we detach the popover and append to the body and add the active class
-        $popover.detach().appendTo(document.body).addClass("active floating-popover");
+        $popover
+          .detach()
+          .appendTo(document.body)
+          .addClass("active floating-popover");
         // then we set the position of the popover
         $popover.css({
           top: popoverTop,
@@ -102,22 +109,14 @@ export default [
       }
     };
 
-    // // on mode change, detach and add back to the dropdown
-    // $scope.$watch(()=>{ return qlik.navigation.getMode() == qlik.navigation.EDIT  },(n,o)=>{
-    //   var floatingpopovers = $(".listbox.lui-popover.floating-popover");
-    //   // loop through popovers and find their id's and return them to their original location
-    //   floatingpopovers.each((_, item) => {
-    //     var id = $(item).attr("id");
-    //     console.log(id); // 'popover-cdsfds-fsdfds'
-    //     var $dropdownParent = $("#" + id.replace("popover-", ""));
-    //     $(item).detach().appendTo($dropdownParent.find(".dropdown-list")).removeClass("active floating-popover");
-    //   });
-    // });
-
     // when click anywhere outside of popover, remove active class and append to dropdown
     $(document).on("click", function (e) {
       // if click is on the popover or is on the dropdown, do nothing
-      if (($(e.target).closest(".listbox.lui-popover.floating-popover").length) || ($(e.target).closest(".dropdown-toggle").length)) return;
+      if (
+        $(e.target).closest(".listbox.lui-popover.floating-popover").length ||
+        $(e.target).closest(".dropdown-toggle").length
+      )
+        return;
 
       var floatingpopovers = $(".listbox.lui-popover.floating-popover");
       // loop through popovers and find their id's and return them to their original location
@@ -125,7 +124,10 @@ export default [
         var id = $(item).attr("id");
         var $dropdownParent = $("#" + id.replace("popover-", ""));
         if (!$(e.target).is($dropdownParent)) {
-          $(item).detach().appendTo($dropdownParent.find(".dropdown-list")).removeClass("active floating-popover");
+          $(item)
+            .detach()
+            .appendTo($dropdownParent.find(".dropdown-list"))
+            .removeClass("active floating-popover");
         }
       });
     });

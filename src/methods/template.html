@@ -142,9 +142,11 @@
                   more</button>
             </div>
          </div>
-         <div class="state-count-bar" tid="stateCount">
+         <div ng-if="dimension.percentOption == 0" class="state-count-bar" tid="stateCount">
             <div class="state selected" ng-style="{'width': dimension.percentSelected + '%'}"></div>
-            <div class="state alternative" ng-style="{'width':  dimension.percentAlternative + '%'}"></div>
+         </div>
+         <div ng-if="dimension.percentOption !== 0" class="state-count-bar" tid="stateCount">
+            <div class="state option" ng-style="{'width': dimension.percentOption + '%'}"></div>
          </div>
       </div>
       <!--------------------------------------------UI Button Group--------------------------------------------------------------->

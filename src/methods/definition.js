@@ -28,14 +28,16 @@ export default {
           ref: "qListObjectDef.qDef.qFieldDefs.0",
           label: "Field",
         },
-        showAlternatives: { // This will make alternatives show up as 'A' instead of 'X'
+        showAlternatives: {
+          // This will make alternatives show up as 'A' instead of 'X'
           type: "boolean",
           label: "Show Alternatives",
           ref: "qListObjectDef.qShowAlternatives",
           defaultValue: true,
           show: false,
         },
-        qAutoSortByState: { // This will sort the listbox by state by default
+        qAutoSortByState: {
+          // This will sort the listbox by state by default
           type: "number",
           label: "Sort by State by Default",
           ref: "qListObjectDef.qAutoSortByState.qDisplayNumberOfRows",
@@ -49,138 +51,164 @@ export default {
           label: "Label",
         },
         SortSettings: {
-            ref:"SortSettings",
-            translation:"Sort Criteria",
-            type:"numeric",
-            component:"dropdown",
-            options:[{
-                value: 0,
-                label: "Logical State"
-            },{
-                value: 1,
-                label: "Numeric Value"
-            },{
-                value: 2,
-                label: "Alphabetical Order"
-            },{
-                value: 3,
-                label: "Initial Load Order"
-            },{
-                value: 4,
-                label: "Expression"
-            }],
-            defaultValue:0
+          ref: "SortSettings",
+          translation: "Sort Criteria",
+          type: "numeric",
+          component: "dropdown",
+          options: [
+            {
+              value: 0,
+              label: "Logical State",
+            },
+            {
+              value: 1,
+              label: "Numeric Value",
+            },
+            {
+              value: 2,
+              label: "Alphabetical Order",
+            },
+            {
+              value: 3,
+              label: "Initial Load Order",
+            },
+            {
+              value: 4,
+              label: "Expression",
+            },
+          ],
+          defaultValue: 0,
         },
-        qSortByState:{
-            ref:"qListObjectDef.qDef.qSortCriterias.0.qSortByState",
-            translation:"Sort by State",
-            type:"numeric",
-            component:"dropdown",
-            options:[{
-                value:1,
-                label:"Ascending"
-            },{
-                value:0,
-                label:"None"
-            },{
-                value:-1,
-                label:"Descending"
-            }],
-            defaultValue:0,
-            show: function(data) {
-                return data.SortSettings == 0;
-            }
+        qSortByState: {
+          ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByState",
+          translation: "Sort by State",
+          type: "numeric",
+          component: "dropdown",
+          options: [
+            {
+              value: 1,
+              label: "Ascending",
+            },
+            {
+              value: 0,
+              label: "None",
+            },
+            {
+              value: -1,
+              label: "Descending",
+            },
+          ],
+          defaultValue: 0,
+          show: function (data) {
+            return data.SortSettings == 0;
+          },
         },
-        qSortByNumeric:{
-            ref:"qListObjectDef.qDef.qSortCriterias.0.qSortByNumeric",
-            translation:"Sort Numerically",
-            type:"numeric",
-            component:"dropdown",
-            options:[{
-                value:1,
-                label:"Ascending"
-            },{
-                value:0,
-                label:"None"
-            },{
-                value:-1,
-                label:"Descending"
-            }],
-            defaultValue:0,
-            show: function(data) {
-                return data.SortSettings == 1;
-            }
+        qSortByNumeric: {
+          ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByNumeric",
+          translation: "Sort Numerically",
+          type: "numeric",
+          component: "dropdown",
+          options: [
+            {
+              value: 1,
+              label: "Ascending",
+            },
+            {
+              value: 0,
+              label: "None",
+            },
+            {
+              value: -1,
+              label: "Descending",
+            },
+          ],
+          defaultValue: 0,
+          show: function (data) {
+            return data.SortSettings == 1;
+          },
         },
-        qSortByAscii:{
-            ref:"qListObjectDef.qDef.qSortCriterias.0.qSortByAscii",
-            translation:"Sort Alphabetically",
-            type:"numeric",
-            component:"dropdown",
-            options:[{
-                value:1,
-                label:"Ascending"
-            },{
-                value:0,
-                label:"None"
-            },{
-                value:-1,
-                label:"Descending"
-            }],
-            defaultValue:0,
-            show: function(data) {
-                return data.SortSettings == 2;
-            }
+        qSortByAscii: {
+          ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByAscii",
+          translation: "Sort Alphabetically",
+          type: "numeric",
+          component: "dropdown",
+          options: [
+            {
+              value: 1,
+              label: "Ascending",
+            },
+            {
+              value: 0,
+              label: "None",
+            },
+            {
+              value: -1,
+              label: "Descending",
+            },
+          ],
+          defaultValue: 0,
+          show: function (data) {
+            return data.SortSettings == 2;
+          },
         },
-        qSortByLoadOrder:{
-            ref:"qListObjectDef.qDef.qSortCriterias.0.qSortByLoadOrder",
-            translation:"Sort by Load Order",
-            type:"numeric",
-            component:"dropdown",
-            options:[{
-                value:1,
-                label:"Ascending"
-            },{
-                value:0,
-                label:"None"
-            },{
-                value:-1,
-                label:"Descending"
-            }],
-            defaultValue:0,
-            show: function(data) {
-                return data.SortSettings == 3;
-            }
+        qSortByLoadOrder: {
+          ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByLoadOrder",
+          translation: "Sort by Load Order",
+          type: "numeric",
+          component: "dropdown",
+          options: [
+            {
+              value: 1,
+              label: "Ascending",
+            },
+            {
+              value: 0,
+              label: "None",
+            },
+            {
+              value: -1,
+              label: "Descending",
+            },
+          ],
+          defaultValue: 0,
+          show: function (data) {
+            return data.SortSettings == 3;
+          },
         },
-        qSortByExpression:{
-            ref:"qListObjectDef.qDef.qSortCriterias.0.qSortByExpression",
-            translation:"Sort by Expression",
-            type:"numeric",
-            component:"dropdown",
-            options:[{
-                value:1,
-                label:"Ascending"
-            },{
-                value:0,
-                label:"None"
-            },{
-                value:-1,
-                label:"Descending"
-            }],
-            defaultValue:0,
-            show: function(data) {
-                return data.SortSettings == 4;
-            }
+        qSortByExpression: {
+          ref: "qListObjectDef.qDef.qSortCriterias.0.qSortByExpression",
+          translation: "Sort by Expression",
+          type: "numeric",
+          component: "dropdown",
+          options: [
+            {
+              value: 1,
+              label: "Ascending",
+            },
+            {
+              value: 0,
+              label: "None",
+            },
+            {
+              value: -1,
+              label: "Descending",
+            },
+          ],
+          defaultValue: 0,
+          show: function (data) {
+            return data.SortSettings == 4;
+          },
         },
-        qExpression:{
-            ref:"qListObjectDef.qDef.qSortCriterias.0.qExpression",
-            translation:"Expression",
-            type:"string",
-            expression:"always",
-            expressionType: "dimension",
-            defaultValue:"",
-            show: function(data) {
-                return data.SortSettings == 4;
-            }
+        qExpression: {
+          ref: "qListObjectDef.qDef.qSortCriterias.0.qExpression",
+          translation: "Expression",
+          type: "string",
+          expression: "always",
+          expressionType: "dimension",
+          defaultValue: "",
+          show: function (data) {
+            return data.SortSettings == 4;
+          },
         },
         initialDataFetchWidth: {
           type: "number",
@@ -265,7 +293,7 @@ export default {
             //return true;
           },
         },
-        multiSelection:{
+        multiSelection: {
           type: "boolean",
           component: "switch",
           label: "Multiselect",
@@ -274,70 +302,69 @@ export default {
             { value: !0, translation: "properties.on" },
             { value: !1, translation: "properties.off" },
           ],
-          defaultValue: !0
+          defaultValue: !0,
         },
         defaultSelectionSwitch: {
-            type: "boolean",
-            component: "switch",
-            label: "Default Selections",
-            ref: "defaultselectionsEnabled",
-            options: [
-              { value: !0, translation: "properties.on" },
-              { value: !1, translation: "properties.off" },
-            ],
-            defaultValue: !1
-          },
-          aboutdefaultSelection: {
-            component: "text",
-            label: `Use similar logic to search in filter for default values entry. For mutiple default values: we enter in this format "value1" + "value2"' . Also attaching the link for help. Entry format should be same as your date field orginal format.`,
-            show: function(d) {
-                return  d.defaultselectionsEnabled;
-              },
-          },
-          aboutdefaultSelectionLink: {
-            label: "Link",
-            component: "link",
-            url: "https://help.qlik.com/en-US/sense/February2021/Subsystems/Hub/Content/Sense_Hub/Selections/SelectionsToolbar/search-selections.htm#anchor-1",
-            show: function(d) {
-                return  d.defaultselectionsEnabled;
-              },
+          type: "boolean",
+          component: "switch",
+          label: "Default Selections",
+          ref: "defaultselectionsEnabled",
+          options: [
+            { value: !0, translation: "properties.on" },
+            { value: !1, translation: "properties.off" },
+          ],
+          defaultValue: !1,
         },
-          defaultSelection: {
-            type: "string",
-            ref: "defaultSelection",
-            label: 'Add example here: "value1" + "value2"',
-            expression: "optional",
-            show: function(d) {
-              return  d.defaultselectionsEnabled;
-            },
+        aboutdefaultSelection: {
+          component: "text",
+          label: `Use similar logic to search in filter for default values entry. For mutiple default values: we enter in this format "value1" + "value2"' . Also attaching the link for help. Entry format should be same as your date field orginal format.`,
+          show: function (d) {
+            return d.defaultselectionsEnabled;
           },
-          EnableSearch: {
-            type: "boolean",
-            component: "switch",
-            label: "Search bar",
-            ref: "enableSearch",
-            options: [
-              {
-                value: true,
-                label: "Enable",
-              },
-              {
-                value: false,
-                label: "Disable",
-              },
-            ],
-            defaultValue: true,
-            show: function (d) {
-              return true;
-            },
+        },
+        aboutdefaultSelectionLink: {
+          label: "Link",
+          component: "link",
+          url: "https://help.qlik.com/en-US/sense/February2021/Subsystems/Hub/Content/Sense_Hub/Selections/SelectionsToolbar/search-selections.htm#anchor-1",
+          show: function (d) {
+            return d.defaultselectionsEnabled;
           },
+        },
+        defaultSelection: {
+          type: "string",
+          ref: "defaultSelection",
+          label: 'Add example here: "value1" + "value2"',
+          expression: "optional",
+          show: function (d) {
+            return d.defaultselectionsEnabled;
+          },
+        },
+        EnableSearch: {
+          type: "boolean",
+          component: "switch",
+          label: "Search bar",
+          ref: "enableSearch",
+          options: [
+            {
+              value: true,
+              label: "Enable",
+            },
+            {
+              value: false,
+              label: "Disable",
+            },
+          ],
+          defaultValue: true,
+          show: function (d) {
+            return true;
+          },
+        },
       },
     },
 
     appearance: {
       uses: "settings",
-      items: {
-      },
+      items: {},
     },
 
     InteractivitySettings: {

@@ -418,8 +418,8 @@
   flex: 0 0 auto;
   height: 4px;
   background: #a9a9a9;
-  border: 0 solid #ccc;
-  width: 100%;
+  border: 1px solid #ccc;
+  width: 98%;
 }
 .state-count-bar .state {
   float: left;
@@ -482,4 +482,56 @@
 
 .dropdown-selectionMenu:hover .dropdown-selectionMenu-content {
   display: block;
+}
+
+/**styles moved back from paint stylesheet to keep it static**/
+.listbox .list-item.O {
+  background-color: #fff !important;
+  color: #595959 !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.listbox .list-item.S {
+  background-color: #009845 !important;
+  color: #fff !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.listbox .list-item.A {
+  background-color: lightgray !important;
+  color: #595959 !important;
+  border-bottom: 1px solid #fff !important;
+}
+.listbox .list-item.X {
+  background-color: darkgray !important;
+  color: #fff !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.button-item.O {
+  background-color: #fff !important;
+  color: #595959 !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.button-item.S {
+  background-color: #009845 !important;
+  color: #fff !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+.button-item.A {
+  background-color: lightgray !important;
+  color: #595959 !important;
+  border-bottom: 1px solid #fff !important;
+}
+.button-item.X {
+  background-color: darkgray !important;
+  color: #fff !important;
+  border-bottom: 1px solid rgb(221, 221, 221) !important;
+}
+/* dynamically change colors for state bars */
+.state-count-bar .state.selected {
+  background: #009845 !important;
+}
+.state-count-bar .state.alternative {
+  background: lightgray !important;
+}
+.state-count-bar .state.option {
+  background: #fff !important;
 }

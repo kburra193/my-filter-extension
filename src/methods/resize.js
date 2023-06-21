@@ -5,20 +5,5 @@ export default function ($element, layout) {
   $$scope.height = $element.height();
   $$scope.width = $element.width();
   $$scope.mode = qlik.navigation.getMode();
-
-  if ($$scope.mode == "edit") {
-    if ($(".dropdown-list .listbox.active").length > 0) {
-      if ($(".dropdown-list .listbox").hasClass("active")) {
-        $(".dropdown-list .listbox.active").removeClass("active");
-      }
-    }
-    if ($(".listbox-selection-toolbar").length > 0) {
-      $(".listbox-selection-toolbar").css({ display: "none" });
-    }
-  }
-  else{
-    $$scope.checkHeight = $$scope.height < $$scope.maxListHeight;
-  }
-
- 
+  $$scope.checkHeight = $$scope.height < $$scope.maxListHeight;
 }
