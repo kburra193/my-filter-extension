@@ -413,7 +413,7 @@
 }
 
 /* State bar */
-.state-count-bar {
+.qv-object-qs-advanced-filter .state-count-bar {
   border-top-width: 1px;
   flex: 0 0 auto;
   height: 4px;
@@ -421,15 +421,18 @@
   border: 1px solid #ccc;
   width: 98%;
 }
-.state-count-bar .state {
+.qv-object-qs-advanced-filter .state-count-bar .state {
   float: left;
   height: 100%;
 }
-.state-count-bar .state.selected {
+.qv-object-qs-advanced-filter .state-count-bar .state.selected {
   background: #009845 !important;
 }
-.state-count-bar .state.alternative {
+.qv-object-qs-advanced-filter .state-count-bar .state.alternative {
   background: lightgray !important;
+}
+.qv-object-qs-advanced-filter .state-count-bar .state.option {
+  background: #fff !important;
 }
 
 .navbar {
@@ -524,14 +527,4 @@
   background-color: darkgray !important;
   color: #fff !important;
   border-bottom: 1px solid rgb(221, 221, 221) !important;
-}
-/* dynamically change colors for state bars */
-.state-count-bar .state.selected {
-  background: #009845 !important;
-}
-.state-count-bar .state.alternative {
-  background: lightgray !important;
-}
-.state-count-bar .state.option {
-  background: #fff !important;
 }
