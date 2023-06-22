@@ -273,6 +273,71 @@ export default async function ($element, layout) {
     }
   };
 
+  //Button Group on click selections
+  $$scope.buttonClick = async function (fieldName, el, event) {
+    if (event.which !== 3) {
+      var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];
+      var multiSelect = myDim.multiSelect;
+      var listObj = myDim.listObj;
+      startEl = el;
+      startElNum = el.qElemNumber;
+      dragging = false;
+      endElNum = el.qElemNumber;
+      var endElState = el.qState;
+      if ($$scope.mode == "analysis") {
+        if (startElNum == endElNum) {
+          // CLICK HANDLER
+          var occurance = getOccurence(elNumbersToSelect, endElNum); // return number of occurnaces of item in array
+          if (multiSelect) {
+            myDim.showSelectionToolbar = true;
+            // if it's already active or already in array, remove it
+            if (endElState == "S" || occurance) {
+              elNumbersToSelect = elNumbersToSelect.filter(
+                (v) => v !== endElNum
+              );
+              // and change state to "O"
+              myDim.values.filter(
+                (row) => row.qElemNumber == endElNum
+              )[0].qState = "O";
+            } else {
+              // if it's not active, add it to array
+              elNumbersToSelect.push(endElNum);
+              // and change state to "S"
+              myDim.values.filter(
+                (row) => row.qElemNumber == endElNum
+              )[0].qState = "S";
+            }
+          } else {
+            // single select - clear all and apply new selection
+            myDim.showSelectionToolbar = false;
+            if (endElState == "S") {
+              // if already selected, clear the array
+              endElNum = false;
+            }
+
+            await listObj.beginSelections({
+              qPaths: ["/qListObjectDef"],
+            });
+            await listObj.selectListObjectValues({
+              qPath: "/qListObjectDef",
+              qValues: endElNum === false ? [] : [endElNum],
+              qToggleMode: false, // true for multi select
+              //qSoftLock: true,
+            });
+            await listObj.endSelections({
+              qAccept: true,
+            });
+          }
+        } else {
+          if (multiSelect) {
+            // DRAG HANDLER
+            myDim.showSelectionToolbar = true;
+          }
+        }
+      }
+    }
+  };
+
   //Selections Menu bar
   $$scope.selectionsMenuBar = async function (fieldName, item) {
     var myDim = $$scope.dimData.filter((i) => i.name == fieldName)[0];

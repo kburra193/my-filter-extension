@@ -200,9 +200,7 @@
                   ng-click="searchValue = ''; clearsearchValue(dimension.name)"></span>
             </div>
             <button class="button-item" ng-repeat="value in dimension.values" ng-class="[value.qState]"
-               ng-mousedown="startDrag(dimension.name, value, $event)"
-               ng-mouseover="hoverHandler(dimension.name, value, $event)"
-               ng-mouseup="endDrag(dimension.name, value, $event)" ng-style="BtnGroupStyle">
+               ng-click="buttonClick(dimension.name, value, $event)" ng-style="BtnGroupStyle">
                <span class="button-item-value" ng-bind-html="highlight(value.qText, searchValue)"></span>
             </button>
             <button ng-hide="dimension.IsVisibleSearch || dimension.IsVisibleSelectionsMenuItems" type="button"
