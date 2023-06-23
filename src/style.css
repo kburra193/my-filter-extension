@@ -170,7 +170,14 @@
 .list-item-frequency {
   float: right;
 }
-
+.label-header {
+  display: flex;
+  flex-direction: row;
+  align-content: flex-start;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
 .label-header .search-icon {
   color: #595959;
   flex: none;
